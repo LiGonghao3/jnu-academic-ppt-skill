@@ -233,6 +233,28 @@ class Builder:
         """这个宽度、这个字号大约能放几个全角字宽。"""
         return max(3.0, box_w_in * margin / (size_pt / 72.0))
 
+    def _body_panel(self, slide):
+        """照片底图的主题（jnu-crisp）在正文区垫一层半透明底板。
+
+        slide-rules.md 要求“图片背景上不要直接放文字”，但这类主题的内容页
+        外壳本身就是整幅实景照片，所以由主题声明 body_panel，引擎统一垫底。"""
+        cfg = self.t.data.get("body_panel")
+        if not cfg:
+            return
+        l, t, w, h = self.g("body")
+        pad = self.p(cfg.get("pad", 0.16))
+        # 上沿不能越过标题下的分隔线，否则底板会把线盖住一半
+        top = max(t - pad, self.g("rule")[1] + self.p(0.08))
+        panel = rect(slide, l - pad, top, w + 2 * pad, t + h + pad - top,
+                     fill=self.t.c(cfg.get("fill", "white")),
+                     shape=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.03)
+        panel.name = "body_panel"
+        clr = panel._element.spPr.find(".//" + qn("a:srgbClr"))
+        if clr is not None:
+            alpha = clr.makeelement(qn("a:alpha"),
+                                    {"val": str(int(cfg.get("alpha", 0.82) * 100000))})
+            clr.append(alpha)
+
     # ---------------- 页眉 ----------------
     def page_head(self, slide, title, kicker=None, rule=True, color="ink",
                   kicker_color="muted", rule_color="line"):
@@ -1046,6 +1068,7 @@ class Builder:
             else:
                 sl = self.shell("content")
                 self.draw_nav(sl, s.get("chapter", self.cur_chapter))
+                self._body_panel(sl)
                 self.page_head(sl, s.get("title"), s.get("kicker"),
                                rule=s.get("rule", True))
                 fn = self.LAYOUTS.get(lay)

@@ -232,5 +232,11 @@
       "color": "primary"
     }
   },
-  "body_balance": 0.4
+  "body_balance": 0.4,
+  "body_panel": {
+    "fill": "white",
+    "alpha": 0.82,
+    "pad": 0.16,
+    "note": "内容页底图是校园实景，正文直接压在建筑纹理上可读性差；垫一层半透明白底"
+  }
 }

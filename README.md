@@ -11,6 +11,22 @@
 
 ---
 
+## 不用 AI？直接下载 PPT 模板
+
+五套暨大 PowerPoint 模板（.pptx）都放在 [`templates/`](templates) 文件夹里，**不装技能也能直接下载使用**，用 PowerPoint 或 WPS 打开后替换文字即可。
+
+| 模板（点击进入下载页） | 风格 | 适合场合 | 页数 | 对应技能主题 |
+|---|---|---|---|---|
+| [暨大PPT模板1-清爽简洁.pptx](templates/%E6%9A%A8%E5%A4%A7PPT%E6%A8%A1%E6%9D%BF1-%E6%B8%85%E7%88%BD%E7%AE%80%E6%B4%81.pptx) | 蓝色渐变、校园实景 | 社团、活动汇报 | 7 | `jnu-crisp` |
+| [暨大PPT模板2-大气通用.pptx](templates/%E6%9A%A8%E5%A4%A7PPT%E6%A8%A1%E6%9D%BF2-%E5%A4%A7%E6%B0%94%E9%80%9A%E7%94%A8.pptx) | 墨青、左侧章节导航 | 组会、论文精读 | 18 | `jnu-teal` |
+| [暨大PPT模板3-红色主题.pptx](templates/%E6%9A%A8%E5%A4%A7PPT%E6%A8%A1%E6%9D%BF3-%E7%BA%A2%E8%89%B2%E4%B8%BB%E9%A2%98.pptx) | 红绸、百年暨南 | 党团、思政活动 | 5 | `jnu-red` |
+| [暨大PPT模板4-蓝色简约.pptx](templates/%E6%9A%A8%E5%A4%A7PPT%E6%A8%A1%E6%9D%BF4-%E8%93%9D%E8%89%B2%E7%AE%80%E7%BA%A6.pptx) | 深青、顶部标签页 | 开题、中期、竞赛答辩 | 6 | `jnu-defense` |
+| [暨大PPT模板5-严谨有序.pptx](templates/%E6%9A%A8%E5%A4%A7PPT%E6%A8%A1%E6%9D%BF5-%E4%B8%A5%E8%B0%A8%E6%9C%89%E5%BA%8F.pptx) | 蓝紫、中英双语 | 毕业论文答辩 | 6 | `jnu-rigor` |
+
+进入文件页后点右上角的下载按钮（Download raw file）即可；也可以点绿色的 **Code → Download ZIP** 一次性下载全部。各模板的样子见下文的 [五套主题](#五套主题) 预览。
+
+> **字体说明**：为了控制体积，模板里没有内嵌字体。模板 3、5 用到的**思源宋体 / 思源黑体**是免费开源字体，可从 [Adobe Fonts 的 GitHub](https://github.com/adobe-fonts) 下载安装；没安装时 PowerPoint 会自动用系统字体代替，排版可能略有变化。模板 5 的英文标题原本使用商业字体 Akzidenz-Grotesk，未安装时会显示为替代字体。
+
 ## 它和"让 AI 直接做个 PPT"有什么不同
 
 - **先理清主线，再做页面。** AI 会先把你的材料整理成"进展 → 证据 → 卡点 → 下一步"（组会）或"背景 → 方法 → 结果 → 不足"（答辩），在对话里给出每页标题，确认后再生成。
@@ -140,6 +156,7 @@ API Key 只从环境变量 `OPENAI_API_KEY` 或技能目录下的 `.openai.json`
 jnu-academic-ppt-skill/
 ├── README.md
 ├── LICENSE
+├── templates/             # ← 五套暨大 PPT 模板，不用 AI 也能直接下载使用
 ├── .github/workflows/     # 自动冒烟测试
 └── jnu-academic-ppt/      # ← 技能本体，安装时只需要这个文件夹
     ├── SKILL.md           # 技能入口（AI 读这个）
@@ -172,4 +189,4 @@ python jnu-academic-ppt/scripts/smoke_test.py
 
 代码和文档采用 [MIT 许可](LICENSE)。
 
-`themes/` 中的背景、校徽、校园照片和版式设计来自暨南大学发布的 PPT 模板，相关权利归原权利人所有，不在 MIT 许可范围内，请在符合学校规定的场合使用。本项目为学生自发的开源工具，并非暨南大学官方项目。
+`templates/` 中的模板文件，以及 `themes/` 中的背景、校徽、校园照片和版式设计，均来自暨南大学发布的 PPT 模板，相关权利归原权利人所有，不在 MIT 许可范围内，请在符合学校规定的场合使用。本项目为学生自发的开源工具，并非暨南大学官方项目。

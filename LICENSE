@@ -24,10 +24,12 @@ SOFTWARE.
 
 素材说明 / Asset notice
 
-jnu-academic-ppt/themes/ 目录中的背景图、校徽、校园照片及版式设计来自
-暨南大学发布的 PPT 模板，相关权利归原权利人所有，不在上述 MIT 许可范围内。
+templates/ 目录中的模板文件，以及 jnu-academic-ppt/themes/ 目录中的背景图、
+校徽、校园照片及版式设计，均来自暨南大学发布的 PPT 模板，相关权利归原权利人
+所有，不在上述 MIT 许可范围内。
 
-The backgrounds, university emblem, campus photographs and layout designs in
-jnu-academic-ppt/themes/ are derived from presentation templates published by
-Jinan University. They remain the property of their respective rights holders
-and are NOT covered by the MIT License above.
+The template files in templates/, and the backgrounds, university emblem,
+campus photographs and layout designs in jnu-academic-ppt/themes/, are derived
+from presentation templates published by Jinan University. They remain the
+property of their respective rights holders and are NOT covered by the MIT
+License above.

@@ -90,6 +90,28 @@ def _regressions(out_dir):
             core = z.read("docProps/core.xml").decode("utf-8")
         if any(a in core for a in TEMPLATE_AUTHORS):
             fails.append(f"{stencil.parent.name}/stencil.pptx 仍带原作者姓名")
+
+    # 5. 图表跟随主题、表格单元格垂直居中
+    prs, _ = _probe(out_dir, "chart", slides=[
+        {"layout": "cover"},
+        {"layout": "chart", "title": "图表", "lead": "结论句",
+         "chart": {"categories": ["a", "b"], "series": [{"name": "s", "values": [1, 2]}]}},
+        {"layout": "table", "title": "表格", "header": ["h1", "h2"], "rows": [["1", "2"]]},
+        {"layout": "closing"}])
+    chart = next(sh.chart for sh in prs.slides[1].shapes if sh.has_chart)
+    has_lead = any(sh.has_text_frame and sh.text_frame.text == "结论句"
+                   for sh in prs.slides[1].shapes)
+    table = next(sh.table for sh in prs.slides[2].shapes if sh.has_table)
+    anchor = table.cell(1, 0)._tc.tcPr.get("anchor")
+    if chart.plots[0].vary_by_categories or not has_lead or anchor != "ctr":
+        fails.append("图表/表格样式回退：彩虹色、lead 未渲染或单元格未垂直居中")
+    else:
+        print("OK  图表跟随主题配色并渲染 lead，表格单元格垂直居中")
+
+    # 6. Windows PowerShell 5.1 按 ANSI 读无 BOM 的脚本，中文会把语法搞坏
+    for ps1 in (ROOT / "scripts").glob("*.ps1"):
+        if not ps1.read_bytes().startswith(b"\xef\xbb\xbf"):
+            fails.append(f"{ps1.name} 缺少 UTF-8 BOM，Windows PowerShell 5.1 会解析失败")
     return fails
 
 

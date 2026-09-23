@@ -21,8 +21,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import MSO_ANCHOR
 from pptx.chart.data import ChartData
 from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
+from pptx.oxml.ns import qn
+from pptx.util import Pt
 
 sys.path.insert(0, str(Path(__file__).parent))
 from ppt_kit import (  # noqa: E402
@@ -558,24 +561,36 @@ class Builder:
         cw = (w - gap) / 2
         pair = s.get("sides") or s.get("columns") or [{}, {}]
         accents = [s.get("left_color", "risk"), s.get("right_color", "ok")]
+        head_h = self.p(0.92)
+        body_w = cw - 2 * pad
+        side_items = [[str(v) for v in (col.get("bullets") or [])] for col in pair[:2]]
+        # 两侧共用一个字号，卡片高度跟着内容走：以前卡片固定撑满正文区，
+        # 三条短要点只占上方三成，下面大片空白
+        size = self.ts("body", 17) - 1
+        for items in side_items:
+            if items:
+                size = min(size, autofit_size(
+                    items, body_w, h - head_h - self.p(0.13), self.ts("body", 17) - 1,
+                    self.ts("min_body", 12), line_spacing=1.4, space_after_pt=8))
+        need = max((block_height(items, body_w, size, 1.4, 8) for items in side_items
+                    if items), default=0.0)
+        ch = min(h, max(self.p(2.4), head_h + need * 1.08 + self.p(0.35)))
+        top = t + (h - ch) / 2
         for i, col in enumerate(pair[:2]):
             x = l + i * (cw + gap)
             acc = self.t.c(col.get("color", accents[i]))
-            card = rect(slide, x, t, cw, h, fill=self.t.c("surface_alt"),
+            card = rect(slide, x, top, cw, ch, fill=self.t.c("surface_alt"),
                         line=self.t.c("line"), shape=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.04)
             card.name = f"cmp_{i+1}"
-            rect(slide, x, t, cw, self.p(0.09), fill=acc)
-            set_text(textbox(slide, x + pad, t + pad, cw - 2 * pad,
+            rect(slide, x, top, cw, self.p(0.09), fill=acc)
+            set_text(textbox(slide, x + pad, top + pad, body_w,
                              self.p(0.5)).text_frame, col.get("title", ""), self.t,
                      role="heading", size=self.ts("card_title", 17), color=acc,
                      bold=True, anchor="middle", space_after=0)
-            items = [str(v) for v in (col.get("bullets") or [])]
+            items = side_items[i]
             if items:
-                by = t + self.p(0.92)
-                bh = h - self.p(1.05)
-                size = autofit_size(items, cw - 2 * pad, bh, self.ts("body", 17) - 1,
-                                    self.ts("min_body", 12), line_spacing=1.4, space_after_pt=8)
-                set_text(textbox(slide, x + pad, by, cw - 2 * pad, bh).text_frame,
+                set_text(textbox(slide, x + pad, top + head_h, body_w,
+                                 ch - head_h - self.p(0.13)).text_frame,
                          items, self.t, role="body", size=size, color="ink",
                          bullet="·", line_spacing=1.4, space_after=8)
 
@@ -695,6 +710,8 @@ class Builder:
                          color="white" if is_head else "ink", bold=is_head,
                          anchor="middle", space_after=0, line_spacing=1.15,
                          align="left" if c == 0 else s.get("align", "left"))
+                # 表格单元格不认 text_frame 的 anchor，垂直居中要设在单元格上
+                cell.vertical_anchor = MSO_ANCHOR.MIDDLE
 
     def s_chart(self, slide, s):
         """可编辑的原生图表；只接受用户提供或可追溯的数据。"""
@@ -718,6 +735,13 @@ class Builder:
         }
         kind = kinds.get(cfg.get("type", cfg.get("chart_type", "column")),
                          XL_CHART_TYPE.COLUMN_CLUSTERED)
+        lead = s.get("lead")
+        if lead:
+            lead_h = self.p(0.85)
+            set_text(textbox(slide, l, t, w, lead_h).text_frame, lead, self.t,
+                     role="body", size=self.ts("lead", 18), color="primary", bold=True,
+                     anchor="middle", line_spacing=1.25)
+            t, h = t + lead_h + self.p(0.12), h - lead_h - self.p(0.12)
         cap = s.get("caption")
         cap_h = self.p(0.42) if cap else 0
         chart = slide.shapes.add_chart(
@@ -762,21 +786,74 @@ class Builder:
             chart.legend.include_in_layout = False
         chart.has_title = False
         chart.value_axis.has_major_gridlines = True
+        self._style_chart(chart, kind)
         if cfg.get("value_min") is not None:
             chart.value_axis.minimum_scale = float(cfg["value_min"])
         if cfg.get("value_max") is not None:
             chart.value_axis.maximum_scale = float(cfg["value_max"])
-        if cfg.get("x_title"):
-            chart.category_axis.has_title = True
-            chart.category_axis.axis_title.text_frame.text = str(cfg["x_title"])
-        if cfg.get("y_title"):
-            chart.value_axis.has_title = True
-            chart.value_axis.axis_title.text_frame.text = str(cfg["y_title"])
+        for axis, key in ((chart.category_axis, "x_title"), (chart.value_axis, "y_title")):
+            if cfg.get(key):
+                axis.has_title = True
+                tf = axis.axis_title.text_frame
+                tf.text = str(cfg[key])
+                for run in tf.paragraphs[0].runs:
+                    run.font.size = Pt(self.ts("caption", 11))
+                    run.font.bold = False
+                    run.font.color.rgb = rgb(self.t.c("muted"))
         if cap:
             set_text(textbox(slide, l, t + h - cap_h + self.p(0.06), w,
                              self.p(0.34)).text_frame, cap, self.t, role="body",
                      size=self.ts("caption", 11), color="muted", align="center",
                      space_after=0)
+
+    CHART_SERIES_COLORS = ["primary", "secondary", "accent", "primary_dark", "muted"]
+
+    def _style_chart(self, chart, kind):
+        """让原生图表跟随主题。python-pptx 的默认样式是 Office 彩虹色：
+        单系列柱状图每根柱子一个颜色、黑色网格线、宋体/Calibri 轴文字，
+        放进暨大主题里非常突兀。"""
+        plot = chart.plots[0]
+        plot.vary_by_categories = False     # 单系列不按类别变色
+        for i, ser in enumerate(plot.series):
+            col = rgb(self.t.c(self.CHART_SERIES_COLORS[i % len(self.CHART_SERIES_COLORS)]))
+            if kind == XL_CHART_TYPE.LINE_MARKERS:
+                ser.format.line.color.rgb = col
+                ser.format.line.width = Pt(2.25)
+                ser.marker.format.fill.solid()
+                ser.marker.format.fill.fore_color.rgb = col
+                ser.marker.format.line.color.rgb = col
+            else:
+                ser.format.fill.solid()
+                ser.format.fill.fore_color.rgb = col
+        grid = chart.value_axis.major_gridlines.format.line
+        grid.color.rgb = rgb(self.t.c("line"))
+        grid.width = Pt(0.75)
+        for axis in (chart.value_axis, chart.category_axis):
+            axis.format.line.color.rgb = rgb(self.t.c("line"))
+            axis.tick_labels.font.size = Pt(self.ts("caption", 11))
+            axis.tick_labels.font.color.rgb = rgb(self.t.c("muted"))
+        # 全图默认字体：latin + 东亚字形都指定，否则中文轴标题会回退成宋体
+        spec = self.t.font("body")
+        latin = spec.get("latin") or spec.get("ea")
+        ea = spec.get("ea") or latin
+        cf = chart.font
+        cf.size = Pt(self.ts("caption", 11))
+        cf.color.rgb = rgb(self.t.c("muted"))
+        if latin:
+            cf.name = latin
+        if ea:
+            rpr = cf._rPr
+            el = rpr.find(qn("a:ea"))
+            if el is None:
+                el = rpr.makeelement(qn("a:ea"), {})
+                latin_el = rpr.find(qn("a:latin"))
+                if latin_el is not None:
+                    latin_el.addnext(el)    # schema 要求 ea 紧跟在 latin 后面
+                else:
+                    rpr.append(el)
+            el.set("typeface", ea)
+        if chart.has_legend:
+            chart.legend.font.size = Pt(self.ts("caption", 11))
 
     def s_quote(self, slide, s):
         l, t, w, h = self.g("body")

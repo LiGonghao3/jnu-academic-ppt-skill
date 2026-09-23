@@ -33,3 +33,16 @@ campus photographs and layout designs in jnu-academic-ppt/themes/, are derived
 from presentation templates published by Jinan University. They remain the
 property of their respective rights holders and are NOT covered by the MIT
 License above.
+
+---
+
+第三方代码 / Third-party code
+
+jnu-thesis-latex/assets/template/ 中的 LaTeX 模板来自
+SolarAscent/JNU-Thesis-LaTeX-Template，以 GNU GPL v3.0 发布（全文见该目录下的
+LICENSE，修改说明见 NOTICE.md），不适用上述 MIT 许可。
+
+The LaTeX template in jnu-thesis-latex/assets/template/ is derived from
+SolarAscent/JNU-Thesis-LaTeX-Template and is licensed under the GNU GPL v3.0
+(full text in that directory's LICENSE, changes listed in NOTICE.md). It is
+NOT covered by the MIT License above.

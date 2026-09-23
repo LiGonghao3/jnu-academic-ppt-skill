@@ -1,0 +1,27 @@
+name: 论文模板编译
+
+on:
+  push:
+    branches: [main]
+    paths: ["jnu-thesis-latex/**", ".github/workflows/thesis-latex.yml"]
+  pull_request:
+    paths: ["jnu-thesis-latex/**", ".github/workflows/thesis-latex.yml"]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: 用脚本新建论文项目
+        run: >
+          python jnu-thesis-latex/scripts/new_thesis.py build/thesis
+          --title "测试题目" --name 测试 --student-id 2022000000 --fontset fandol
+      - name: XeLaTeX 编译
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: jnuthesis.tex
+          working_directory: build/thesis
+          latexmk_use_xelatex: true

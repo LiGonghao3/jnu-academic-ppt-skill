@@ -192,6 +192,12 @@ API Key 只从环境变量 `OPENAI_API_KEY` 或技能目录下的 `.openai.json`
 - **诚实自检**：报告会区分"静态估算"和"PowerPoint 实测"，没实测过的不会写成已经实测。
 - **备注不是唯一交付**：WPS、手机和导出的 PDF 可能看不到备注，所以模拟问答一定会在对话里完整给出。
 
+## 附带：本科毕业论文 LaTeX 排版
+
+仓库里还有一个小技能 [`jnu-thesis-latex/`](jnu-thesis-latex)，用来按暨南大学本科毕业论文（设计）官方格式排版 LaTeX 论文。它能新建项目、填好封面，帮你把草稿或 Word 内容整理进模板，编译时自动检查未定义的引用、文献和缺字。安装方式与上面相同，把整个文件夹放进技能目录即可，然后对 AI 说"用暨大毕业论文 LaTeX 模板帮我排版论文"。
+
+模板本身来自 [SolarAscent/JNU-Thesis-LaTeX-Template](https://github.com/SolarAscent/JNU-Thesis-LaTeX-Template)，按 GPL-3.0 许可随附，并做了两处符合学校规范的小修正（见其中的 `NOTICE.md`）。需要 XeLaTeX；没有本地环境时可以用 Overleaf。
+
 ## 仓库结构
 
 ```text
@@ -200,16 +206,17 @@ jnu-academic-ppt-skill/
 ├── LICENSE
 ├── templates/             # ← 五套暨大 PPT 模板，不用 AI 也能直接下载使用
 ├── examples/              # ← 完整示例：Transformer 论文精读（四种主题的成品 + 模拟问答）
-├── .github/workflows/     # 自动冒烟测试
-└── jnu-academic-ppt/      # ← 技能本体，安装时只需要这个文件夹
-    ├── SKILL.md           # 技能入口（AI 读这个）
-    ├── agents/openai.yaml # Codex 界面元数据
-    ├── requirements.txt
-    ├── assets/            # 周记模板、示例配图
-    ├── examples/          # 组会、答辩示例 deck.json
-    ├── references/        # 按需加载的详细规范
-    ├── scripts/           # 生成、自检、预览、生图脚本
-    └── themes/            # 五套主题：stencil.pptx + theme.json + 预览图
+├── .github/workflows/     # 自动冒烟测试、论文模板编译测试
+├── jnu-academic-ppt/      # ← PPT 技能本体，安装时只需要这个文件夹
+│   ├── SKILL.md           # 技能入口（AI 读这个）
+│   ├── agents/openai.yaml # Codex 界面元数据
+│   ├── requirements.txt
+│   ├── assets/            # 周记模板、示例配图
+│   ├── examples/          # 组会、答辩示例 deck.json
+│   ├── references/        # 按需加载的详细规范
+│   ├── scripts/           # 生成、自检、预览、生图脚本
+│   └── themes/            # 五套主题：stencil.pptx + theme.json + 预览图
+└── jnu-thesis-latex/      # 附带的毕业论文 LaTeX 技能（模板为 GPL-3.0）
 ```
 
 ## 已知限制
@@ -230,6 +237,6 @@ python jnu-academic-ppt/scripts/smoke_test.py
 
 ## 许可与素材说明
 
-代码和文档采用 [MIT 许可](LICENSE)。
+代码和文档采用 [MIT 许可](LICENSE)，`jnu-thesis-latex/assets/template/` 中的 LaTeX 模板除外，它沿用上游的 GPL-3.0 许可。
 
 `templates/` 中的模板文件，以及 `themes/` 中的背景、校徽、校园照片和版式设计，均来自暨南大学发布的 PPT 模板，相关权利归原权利人所有，不在 MIT 许可范围内，请在符合学校规定的场合使用。本项目为学生自发的开源工具，并非暨南大学官方项目。

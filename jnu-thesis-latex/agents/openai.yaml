@@ -1,0 +1,8 @@
+interface:
+  display_name: "暨大本科毕业论文 LaTeX"
+  short_description: "按暨南大学官方格式用 LaTeX 排版本科毕业论文"
+  brand_color: "#145D68"
+  default_prompt: "Use $jnu-thesis-latex to set up and typeset my JNU undergraduate thesis in LaTeX."
+
+policy:
+  allow_implicit_invocation: true

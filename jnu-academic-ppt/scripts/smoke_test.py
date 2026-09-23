@@ -8,6 +8,7 @@ import zipfile
 from pathlib import Path
 
 from pptx import Presentation
+from pptx.oxml.ns import qn
 
 from build_deck import ROOT, build
 from check_deck import check
@@ -107,6 +108,27 @@ def _regressions(out_dir):
         fails.append("图表/表格样式回退：彩虹色、lead 未渲染或单元格未垂直居中")
     else:
         print("OK  图表跟随主题配色并渲染 lead，表格单元格垂直居中")
+
+    # 5b. 横向条形图：按书写顺序从上到下、负值不反色、正负语义色
+    prs, _ = _probe(out_dir, "bar", slides=[
+        {"layout": "cover"},
+        {"layout": "chart", "title": "变化量",
+         "chart": {"type": "bar", "categories": ["先", "后"],
+                   "series": [{"name": "d", "values": [-1.5, 0.5]}],
+                   "number_format": "+0.0;-0.0;0.0", "data_labels": True,
+                   "sign_colors": True}},
+        {"layout": "closing"}])
+    chart = next(sh.chart for sh in prs.slides[1].shapes if sh.has_chart)
+    ser = chart.plots[0].series[0]
+    dpts = ser._element.findall(qn("c:dPt"))
+    ok_order = list(chart.plots[0].categories) == ["后", "先"]   # PowerPoint 自下而上画
+    ok_invert = dpts and all(d.find(qn("c:invertIfNegative")) is not None
+                             and d.find(qn("c:invertIfNegative")).get("val") == "0"
+                             for d in dpts)
+    if not (ok_order and ok_invert and chart.plots[0].has_data_labels):
+        fails.append("条形图回退：顺序、负值反色或数值标签异常")
+    else:
+        print("OK  条形图按书写顺序排列，负值不反色，带数值标签")
 
     # 6. Windows PowerShell 5.1 按 ANSI 读无 BOM 的脚本，中文会把语法搞坏
     for ps1 in (ROOT / "scripts").glob("*.ps1"):

@@ -23,7 +23,8 @@ from pathlib import Path
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR
 from pptx.chart.data import ChartData
-from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
+from pptx.enum.chart import (XL_CHART_TYPE, XL_LABEL_POSITION, XL_LEGEND_POSITION,
+                             XL_TICK_LABEL_POSITION)
 from pptx.oxml.ns import qn
 from pptx.util import Pt
 
@@ -717,17 +718,6 @@ class Builder:
         """可编辑的原生图表；只接受用户提供或可追溯的数据。"""
         l, t, w, h = self.g("body")
         cfg = s.get("chart") or s
-        data = ChartData()
-        data.categories = [str(x) for x in (cfg.get("categories") or [])]
-        normalized_series = []
-        for series in cfg.get("series") or []:
-            values = [int(v) if isinstance(v, float) and v.is_integer() else v
-                      for v in (series.get("values") or [])]
-            normalized_series.append(values)
-            data.add_series(str(series.get("name", "系列")), values)
-        if not data.categories or not (cfg.get("series") or []):
-            self.warnings.append(f"图表《{s.get('title', '')}》缺少 categories 或 series")
-            return
         kinds = {
             "column": XL_CHART_TYPE.COLUMN_CLUSTERED,
             "bar": XL_CHART_TYPE.BAR_CLUSTERED,
@@ -735,6 +725,21 @@ class Builder:
         }
         kind = kinds.get(cfg.get("type", cfg.get("chart_type", "column")),
                          XL_CHART_TYPE.COLUMN_CLUSTERED)
+        # 横向条形图在 PowerPoint 里第一个类别画在最下面，和阅读顺序相反；
+        # 这里倒序喂数据，让 deck.json 里写的第一项出现在最上面
+        flip = (lambda xs: list(xs)[::-1]) if kind == XL_CHART_TYPE.BAR_CLUSTERED \
+            else (lambda xs: list(xs))
+        data = ChartData()
+        data.categories = flip(str(x) for x in (cfg.get("categories") or []))
+        normalized_series = []
+        for series in cfg.get("series") or []:
+            values = flip(int(v) if isinstance(v, float) and v.is_integer() else v
+                          for v in (series.get("values") or []))
+            normalized_series.append(values)
+            data.add_series(str(series.get("name", "系列")), values)
+        if not data.categories or not (cfg.get("series") or []):
+            self.warnings.append(f"图表《{s.get('title', '')}》缺少 categories 或 series")
+            return
         lead = s.get("lead")
         if lead:
             lead_h = self.p(0.85)
@@ -787,6 +792,7 @@ class Builder:
         chart.has_title = False
         chart.value_axis.has_major_gridlines = True
         self._style_chart(chart, kind)
+        self._chart_labels(chart, kind, cfg, normalized_series)
         if cfg.get("value_min") is not None:
             chart.value_axis.minimum_scale = float(cfg["value_min"])
         if cfg.get("value_max") is not None:
@@ -825,6 +831,8 @@ class Builder:
             else:
                 ser.format.fill.solid()
                 ser.format.fill.fore_color.rgb = col
+                # PowerPoint 默认把负值柱子反色成白底黑框，看起来像空柱
+                ser.invert_if_negative = False
         grid = chart.value_axis.major_gridlines.format.line
         grid.color.rgb = rgb(self.t.c("line"))
         grid.width = Pt(0.75)
@@ -854,6 +862,43 @@ class Builder:
             el.set("typeface", ea)
         if chart.has_legend:
             chart.legend.font.size = Pt(self.ts("caption", 11))
+
+    def _chart_labels(self, chart, kind, cfg, series_values):
+        """数值标签与负值处理。
+
+        有负值（比如“相对基线的变化量”）时，类别标签默认贴着零线画，
+        会压在朝负方向的柱子上，所以挪到坐标轴最低端。"""
+        if any(isinstance(v, (int, float)) and v < 0
+               for vals in series_values for v in vals):
+            chart.category_axis.tick_label_position = XL_TICK_LABEL_POSITION.LOW
+        # 「相对基线的变化量」这类图：下降用 risk、提升用 ok（语义色，见 slide-rules.md）
+        if cfg.get("sign_colors") and kind != XL_CHART_TYPE.LINE_MARKERS:
+            for ser, vals in zip(chart.plots[0].series, series_values):
+                for i, v in enumerate(vals):
+                    if isinstance(v, (int, float)) and v != 0:
+                        fill = ser.points[i].format.fill
+                        fill.solid()
+                        fill.fore_color.rgb = rgb(self.t.c("risk" if v < 0 else "ok"))
+                # 单点格式 c:dPt 不继承系列上的 invertIfNegative=0，PowerPoint 会把
+                # 负值点又反成白底黑框，必须在每个 dPt 里（紧跟 c:idx）再写一次
+                for dpt in ser._element.findall(qn("c:dPt")):
+                    if dpt.find(qn("c:invertIfNegative")) is None:
+                        inv = dpt.makeelement(qn("c:invertIfNegative"), {"val": "0"})
+                        dpt.find(qn("c:idx")).addnext(inv)
+        fmt = cfg.get("number_format")
+        if fmt:
+            chart.value_axis.tick_labels.number_format = fmt
+            chart.value_axis.tick_labels.number_format_is_linked = False
+        if cfg.get("data_labels"):
+            plot = chart.plots[0]
+            plot.has_data_labels = True
+            labels = plot.data_labels
+            labels.number_format = fmt or "General"
+            labels.number_format_is_linked = False
+            labels.position = (XL_LABEL_POSITION.ABOVE if kind == XL_CHART_TYPE.LINE_MARKERS
+                               else XL_LABEL_POSITION.OUTSIDE_END)
+            labels.font.size = Pt(self.ts("caption", 11))
+            labels.font.color.rgb = rgb(self.t.c("ink"))
 
     def s_quote(self, slide, s):
         l, t, w, h = self.g("body")

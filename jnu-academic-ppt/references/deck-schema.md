@@ -202,6 +202,29 @@
  "source": "本实验，3 个随机种子；论文报告值见 Table 2"}
 ```
 
+可选字段：
+
+| 字段 | 说明 |
+|---|---|
+| `data_labels` | `true` 时在柱子/点上标出数值 |
+| `number_format` | 数值格式，如 `"0.0"`、`"0%"`；变化量用 `"+0.0;-0.0;0.0"` 带正负号 |
+| `sign_colors` | `true` 时负值用 `risk`、正值用 `ok`，适合「相对基线的变化量」这类图 |
+| `value_min` / `value_max` | 数值轴范围。不从 0 开始时要在备注里提醒差距被放大 |
+
+横向条形图（`"type": "bar"`）按 `categories` 的书写顺序从上到下排列。有负值时类别标签自动放到坐标轴最低端，不会压在柱子上。
+
+例：把消融结果画成相对基线的变化量，比逐条写要点更直观。
+
+```jsonc
+{"layout": "chart", "title": "消融：减层、去 dropout 掉得最多",
+ "lead": "各变体相对 base（25.8 BLEU）的变化。",
+ "chart": {"type": "bar",
+           "categories": ["层数 6 → 2", "去掉 dropout", "big 模型"],
+           "series": [{"name": "ΔBLEU", "values": [-2.1, -1.2, 0.6]}],
+           "number_format": "+0.0;-0.0;0.0", "data_labels": true, "sign_colors": true},
+ "source": "Vaswani et al., 2017, Table 3"}
+```
+
 只能填入真实数据。标题、单位、基线、样本量/随机种子和来源应在 `lead`、轴标题、`source` 或备注中说清。更复杂的误差条、散点图和统计标记优先由宿主原生演示文稿工具创建；本地引擎的 `chart` 版式只覆盖常用折线、柱形和条形图。
 
 ## image-text —— 图文对照

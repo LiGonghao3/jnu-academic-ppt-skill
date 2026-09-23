@@ -1,0 +1,468 @@
+{
+  "theme": "jnu-teal",
+  "asset_dir": "figures",
+  "meta": {
+    "title": "Attention Is All You Need 论文精读",
+    "subtitle": "Vaswani et al., NIPS 2017",
+    "presenter": "张同学",
+    "affiliation": "信息科学技术学院",
+    "date": "2026-09-23",
+    "duration_minutes": 20,
+    "audience": "课题组组会"
+  },
+  "chapters": [
+    {
+      "title": "问题与动机",
+      "title_en": "Motivation"
+    },
+    {
+      "title": "方法拆解",
+      "title_en": "Method"
+    },
+    {
+      "title": "论文证据",
+      "title_en": "Evidence"
+    },
+    {
+      "title": "复现与评价",
+      "title_en": "Reproduction & Critique"
+    },
+    {
+      "title": "对我们的启发",
+      "title_en": "Takeaways"
+    }
+  ],
+  "qa": [
+    {
+      "slide": 8,
+      "question": "为什么要除以 √d_k？不缩放会怎样？",
+      "answer": "q·k 的方差随 d_k 线性增长，点积过大时 softmax 进入饱和区、梯度极小；原文脚注 4 给出方差推导。",
+      "gap": "若被追问“加性注意力在大 d_k 时更好”的实验，需要查原文引用的 [3]"
+    },
+    {
+      "slide": 5,
+      "question": "自注意力每层是 O(n²·d)，为什么还说比 RNN 快？",
+      "answer": "关键是串行操作数 O(1) 对 O(n)，可以整层并行；且 n < d 时（句子级翻译常见）每层计算量也更小。",
+      "gap": ""
+    },
+    {
+      "slide": 9,
+      "question": "多头注意力为什么不是头越多越好？",
+      "answer": "总计算量固定，头越多每头维度越小；Table 3 (A)(B) 显示 d_k 过小会损害效果，32 头降到 25.4。",
+      "gap": ""
+    },
+    {
+      "slide": 10,
+      "question": "没有循环，模型怎么知道词序？为什么选正余弦位置编码？",
+      "answer": "把正余弦编码加到输入嵌入上；作者假设它便于表达相对位置、能外推到更长序列，但可学习嵌入结果几乎相同（25.7 vs 25.8）。",
+      "gap": "外推到更长序列的能力，原文没有做实验验证"
+    },
+    {
+      "slide": 12,
+      "question": "训练成本的 FLOPs 是怎么算的？不同论文之间可比吗？",
+      "answer": "训练时长 × GPU 数 × 单卡持续单精度算力（脚注 5），是粗略估计，没有计入实际硬件利用率差异。",
+      "gap": ""
+    },
+    {
+      "slide": 16,
+      "question": "复现得到 26.4 BLEU，能说明复现成功吗？",
+      "answer": "不能直接和论文比：数据集、分词、BLEU 计算工具都不同；只能说明实现能在小数据集上正常收敛。",
+      "gap": "需补充：用 sacreBLEU 等统一口径，与其他 Multi30K 基线对比"
+    },
+    {
+      "slide": 17,
+      "question": "Multi30K 只有约 2.9 万句对，用 base 规模的模型会不会过拟合？",
+      "answer": "容量明显偏大，通常要换更小的模型或加强正则；该复现没有给出小模型对照。",
+      "gap": "需补充：小模型对照，或训练/验证损失曲线"
+    },
+    {
+      "slide": 18,
+      "question": "这篇论文最主要的局限是什么？",
+      "answer": "只在机器翻译上验证、没有报告多次运行方差、长序列的 O(n²) 代价只做了理论分析。",
+      "gap": ""
+    }
+  ],
+  "slides": [
+    {
+      "layout": "cover"
+    },
+    {
+      "layout": "toc",
+      "title": "目录",
+      "kicker": "CONTENTS"
+    },
+    {
+      "layout": "section",
+      "title": "问题与动机",
+      "title_en": "Motivation"
+    },
+    {
+      "layout": "bullets",
+      "title": "RNN 的串行计算，是长序列训练的瓶颈",
+      "kicker": "问题",
+      "lead": "第 t 步必须等第 t−1 步算完：序列越长越难并行，也越难学到远距离依赖。",
+      "bullets": [
+        "循环网络按位置逐步计算，同一个训练样本内部无法并行",
+        "显存又限制了跨样本的批处理，长序列时矛盾更突出",
+        "此前的注意力机制几乎都搭配 RNN 使用，没有摆脱串行",
+        "ConvS2S、ByteNet 可以并行，但远距离依赖的路径随距离增长"
+      ],
+      "source": "Vaswani et al., 2017, §1–2",
+      "notes": "约 1.5 分钟。先讲清“串行”到底卡在哪：不是算得慢，而是没法在一个样本内部并行。ConvS2S 的路径长度随距离线性增长，ByteNet 是对数增长（原文 §2）。"
+    },
+    {
+      "layout": "table",
+      "title": "自注意力把任意两位置的路径缩短到 O(1)",
+      "kicker": "Table 1",
+      "header": [
+        "层类型",
+        "每层复杂度",
+        "串行操作数",
+        "最大路径长度"
+      ],
+      "rows": [
+        [
+          "自注意力",
+          "O(n²·d)",
+          "O(1)",
+          "O(1)"
+        ],
+        [
+          "循环层",
+          "O(n·d²)",
+          "O(n)",
+          "O(n)"
+        ],
+        [
+          "卷积层",
+          "O(k·n·d²)",
+          "O(1)",
+          "O(logₖ n)"
+        ],
+        [
+          "受限自注意力",
+          "O(r·n·d)",
+          "O(1)",
+          "O(n/r)"
+        ]
+      ],
+      "source": "Vaswani et al., 2017, Table 1（n 序列长度，d 表示维度，k 卷积核，r 邻域大小）",
+      "notes": "重点看后两列：自注意力的串行操作和路径长度都是常数。代价是每层 O(n²·d)，当 n < d 时（句子级翻译常见，d=512）反而比循环层便宜；序列很长时就要考虑受限自注意力（原文 §4）。"
+    },
+    {
+      "layout": "section",
+      "title": "方法拆解",
+      "title_en": "Method"
+    },
+    {
+      "layout": "image-text",
+      "title": "编码器与解码器全部由注意力和前馈层堆叠",
+      "image": "fig1_architecture.png",
+      "image_side": "left",
+      "image_ratio": 0.4,
+      "caption": "图 1　Transformer 整体结构（原文 Fig. 1）",
+      "lead": "6 层编码器 + 6 层解码器，d_model = 512，没有任何循环或卷积。",
+      "bullets": [
+        "每层两个子层：多头自注意力 + 逐位置前馈网络",
+        "每个子层外面套残差连接，再做 LayerNorm",
+        "解码器多一个编码器-解码器注意力，用来读取源句表示",
+        "解码器的自注意力加掩码，保证只看已经生成的词"
+      ],
+      "source": "Vaswani et al., 2017, §3.1, Fig. 1",
+      "notes": "约 2 分钟，这页是全场最重要的图。按“左边编码器 → 中间连线 → 右边解码器”的顺序讲。LayerNorm(x + Sublayer(x)) 是原文的 Post-LN 写法。"
+    },
+    {
+      "layout": "image-text",
+      "title": "缩放点积注意力：除以 √d_k 防止 softmax 饱和",
+      "image": "fig2a_scaled_dot.png",
+      "image_side": "right",
+      "image_ratio": 0.3,
+      "caption": "图 2（左）缩放点积注意力",
+      "lead": "Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V",
+      "bullets": [
+        "Q 与所有 K 做点积得到相关度，softmax 后对 V 加权求和",
+        "q·k 的方差随 d_k 增长，不缩放会把 softmax 推进梯度极小区",
+        "与加性注意力理论复杂度相当，但能用矩阵乘法高度优化",
+        "掩码把非法位置置为 −∞，解码器靠它屏蔽未来信息"
+      ],
+      "source": "Vaswani et al., 2017, §3.2.1, 式 (1)，脚注 4",
+      "notes": "脚注 4：若 q、k 各分量独立、均值 0、方差 1，则 q·k 均值 0、方差 d_k。这是“为什么除以 √d_k”的标准答案。"
+    },
+    {
+      "layout": "image-text",
+      "title": "多头注意力：8 个 64 维的头并行计算",
+      "image": "fig2b_multihead.png",
+      "image_side": "right",
+      "image_ratio": 0.3,
+      "caption": "图 2（右）多头注意力",
+      "lead": "计算量与单头全维度相当，却能同时关注不同子空间。",
+      "bullets": [
+        "每个头先把 Q、K、V 线性投影到 64 维，再各自做注意力",
+        "8 个头的输出拼接后，再做一次线性投影",
+        "三处使用：编码器自注意力、解码器掩码自注意力、编解码注意力",
+        "单头比最佳设置低 0.9 BLEU（Table 3 A 组）"
+      ],
+      "source": "Vaswani et al., 2017, §3.2.2–3.2.3, Table 3 (A)",
+      "notes": "h = 8，d_k = d_v = d_model / h = 64。强调“拆成多个低维头”不增加计算量。"
+    },
+    {
+      "layout": "cards",
+      "title": "去掉循环后，三个细节补回顺序与稳定性",
+      "cards": [
+        {
+          "tag": "01",
+          "title": "位置编码",
+          "bullets": [
+            "正余弦函数，波长成几何级数",
+            "换成可学习嵌入：25.7 vs 25.8"
+          ]
+        },
+        {
+          "tag": "02",
+          "title": "逐位置前馈网络",
+          "bullets": [
+            "每个位置独立的两层全连接",
+            "中间维度 2048，ReLU 激活"
+          ]
+        },
+        {
+          "tag": "03",
+          "title": "训练配方",
+          "bullets": [
+            "Adam，前 4000 步线性 warmup",
+            "Dropout 0.1，标签平滑 0.1"
+          ]
+        }
+      ],
+      "source": "Vaswani et al., 2017, §3.3, §3.5, §5.3–5.4, Table 3 (E)",
+      "notes": "25.7 vs 25.8 是 newstest2013 开发集 BLEU（Table 3 E 行 vs base）。标签平滑会让困惑度变差，但提升 BLEU（原文 §5.4）。"
+    },
+    {
+      "layout": "section",
+      "title": "论文证据",
+      "title_en": "Evidence"
+    },
+    {
+      "layout": "table",
+      "title": "EN-DE 上 base 模型已超过此前全部结果（含集成）",
+      "kicker": "Table 2",
+      "header": [
+        "模型",
+        "EN-DE BLEU",
+        "EN-FR BLEU",
+        "训练成本 EN-DE (FLOPs)"
+      ],
+      "rows": [
+        [
+          "GNMT + RL",
+          "24.6",
+          "39.92",
+          "2.3×10¹⁹"
+        ],
+        [
+          "ConvS2S",
+          "25.16",
+          "40.46",
+          "9.6×10¹⁸"
+        ],
+        [
+          "ConvS2S 集成",
+          "26.36",
+          "41.29",
+          "7.7×10¹⁹"
+        ],
+        [
+          "Transformer base",
+          "27.3",
+          "38.1",
+          "3.3×10¹⁸"
+        ],
+        [
+          "Transformer big",
+          "28.4",
+          "41.0",
+          "2.3×10¹⁹"
+        ]
+      ],
+      "source": "Vaswani et al., 2017, Table 2（newstest2014）",
+      "notes": "注意口径：EN-FR 上 big 的 41.0 是单模型最好，但仍低于 ConvS2S 集成的 41.29，不要说“全面超越”。base 取最后 5 个检查点平均，big 取 20 个；beam size 4，长度惩罚 α = 0.6（§6.1）。base 在 8 张 P100 上训练约 12 小时，big 约 3.5 天（§5.2）。"
+    },
+    {
+      "layout": "chart",
+      "title": "头数不是越多越好：单头掉 0.9 BLEU，32 头也下降",
+      "lead": "固定总计算量，只改变头数 h 与每头维度 d_k = d_v。",
+      "chart": {
+        "type": "column",
+        "categories": [
+          "h = 1",
+          "h = 4",
+          "h = 8（base）",
+          "h = 16",
+          "h = 32"
+        ],
+        "series": [
+          {
+            "name": "BLEU",
+            "values": [
+              24.9,
+              25.5,
+              25.8,
+              25.8,
+              25.4
+            ]
+          }
+        ],
+        "x_title": "注意力头数",
+        "y_title": "BLEU（newstest2013 开发集）",
+        "value_min": 24.5,
+        "value_max": 26.0,
+        "number_format": "0.0",
+        "data_labels": true,
+        "show_legend": false
+      },
+      "source": "Vaswani et al., 2017, Table 3 (A)；开发集，未做检查点平均",
+      "notes": "对应困惑度：5.29 / 5.00 / 4.92 / 4.91 / 5.01。纵轴从 24.5 起，柱子高度差被放大，讲的时候要说明真实差距在 1 BLEU 以内；且都是单次运行，没有方差。"
+    },
+    {
+      "layout": "chart",
+      "title": "消融：减层、去 dropout 掉得最多，大模型 +0.6",
+      "kicker": "Table 3",
+      "lead": "各变体相对 base（25.8 BLEU）的变化，newstest2013 开发集。",
+      "chart": {
+        "type": "bar",
+        "categories": [
+          "层数 6 → 2",
+          "去掉 dropout",
+          "d_k 64 → 16",
+          "去掉标签平滑",
+          "可学习位置嵌入",
+          "big 模型（213M 参数）"
+        ],
+        "series": [
+          {
+            "name": "相对 base 的 BLEU 变化",
+            "values": [
+              -2.1,
+              -1.2,
+              -0.7,
+              -0.5,
+              -0.1,
+              0.6
+            ]
+          }
+        ],
+        "y_title": "相对 base 的 BLEU 变化",
+        "value_min": -2.5,
+        "value_max": 1.0,
+        "number_format": "+0.0;-0.0;0.0",
+        "data_labels": true,
+        "sign_colors": true,
+        "show_legend": false
+      },
+      "source": "Vaswani et al., 2017, Table 3 (B)(C)(D)(E) 与 big 行；单次运行",
+      "notes": "原始值：base 25.8；层数 2 → 23.7；去掉 dropout → 24.6；d_k 16 → 25.1；去掉标签平滑 → 25.3；可学习位置嵌入 → 25.7；big → 26.4。讲的时候点两处：一是 d_k 太小伤性能，说明相关度计算需要足够维度；二是去掉标签平滑后困惑度反而更低（4.67 vs 4.92）但 BLEU 下降，标签平滑是用困惑度换准确率。这页比主表更有用，它告诉我们哪些超参数敏感。base 参数量约 65M。"
+    },
+    {
+      "layout": "section",
+      "title": "复现与评价",
+      "title_en": "Reproduction & Critique"
+    },
+    {
+      "layout": "kpi",
+      "title": "第三方复现：Multi30K 英德上 26.4 BLEU",
+      "kicker": "GitHub 复现",
+      "items": [
+        {
+          "value": "26.4",
+          "label": "BLEU",
+          "note": "Multi30K EN-DE，README 报告值"
+        },
+        {
+          "value": "55.2M",
+          "label": "参数量",
+          "note": "论文 base 约 65M"
+        },
+        {
+          "value": "3.20",
+          "label": "最低验证损失",
+          "note": "最低训练损失 2.85"
+        }
+      ],
+      "source": "github.com/hyunwoongko/transformer（README）",
+      "notes": "这是 GitHub 上一份个人从零实现的 PyTorch 版本。配置：6 层、8 头、d_model 512、FFN 2048、dropout 0.1、batch 128，与论文 base 结构一致。参数量 55,207,087，少于论文 65M，主要因为 Multi30K 词表更小。README 未说明分词方式、翻译方向细节和 BLEU 计算工具。"
+    },
+    {
+      "layout": "compare",
+      "title": "26.4 与论文 27.3 不能直接比：数据和口径都不同",
+      "sides": [
+        {
+          "title": "论文 base（Table 2）",
+          "color": "primary",
+          "bullets": [
+            "WMT14 英德，约 450 万句对",
+            "BPE 共享词表，约 3.7 万词元",
+            "newstest2014 测试，beam 4 + 检查点平均"
+          ]
+        },
+        {
+          "title": "第三方复现（Multi30K）",
+          "color": "warn",
+          "bullets": [
+            "Multi30K 图像描述，约 2.9 万句对",
+            "README 未说明分词和 BLEU 计算工具",
+            "只报告一次结果，没有方差"
+          ]
+        }
+      ],
+      "source": "原文 §5–6；hyunwoongko/transformer；Elliott et al., 2016",
+      "notes": "结论：这份复现只能证明实现能在小数据上正常训练，不能用来说明“复现到了论文水平”或“比论文低”。数据量相差约 150 倍。补充差异：论文 base 在 8 张 P100 上训练 10 万步约 12 小时；复现的学习率调度用 ReduceLROnPlateau，不是论文的 warmup 公式。Multi30K 规模（约 2.9 万训练句对）引自 Elliott et al., 2016。"
+    },
+    {
+      "layout": "two-col",
+      "title": "我的评价：机制论证扎实，但证据范围有限",
+      "columns": [
+        {
+          "title": "可信的部分",
+          "bullets": [
+            "复杂度与路径长度分析，和消融结果相互印证",
+            "主表同时给出 BLEU 与训练成本，比较较全面",
+            "代码开源（tensor2tensor），第三方能独立复现"
+          ]
+        },
+        {
+          "title": "需要保留的地方",
+          "bullets": [
+            "只在机器翻译上验证，任务类型单一",
+            "没有多次运行的方差，0.1–0.3 的差距难判断",
+            "长序列的 O(n²) 代价只做了分析，没有实测"
+          ]
+        }
+      ],
+      "source": "Vaswani et al., 2017, §4, §6–7",
+      "notes": "受限自注意力在原文里只作为未来工作提出（§4、§7）。"
+    },
+    {
+      "layout": "section",
+      "title": "对我们的启发",
+      "title_en": "Takeaways"
+    },
+    {
+      "layout": "bullets",
+      "title": "读论文先看消融表，做复现先对齐评测口径",
+      "kicker": "启发",
+      "lead": "复现结果和论文数字比较前，先确认数据、分词、解码和评测工具一致。",
+      "bullets": [
+        "复现前列清数据集、分词、解码设置与 BLEU 工具，缺一项就无法比较",
+        "消融表告诉我们哪些超参敏感，调参优先级按它来排",
+        "输入变长时注意 O(n²) 显存，必要时考虑受限或稀疏注意力",
+        "报告自己的结果时，至少跑 3 个随机种子并给出方差"
+      ],
+      "notes": "这一页要结合组里自己的课题讲一句：我们的输入长度大概多少、会不会碰到 O(n²) 的显存上限。（需汇报人根据实际课题补充）"
+    },
+    {
+      "layout": "closing",
+      "title": "谢谢",
+      "subtitle": "欢迎提问与讨论"
+    }
+  ]
+}

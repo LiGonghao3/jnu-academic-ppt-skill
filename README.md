@@ -5,9 +5,10 @@
 适用于每周组会、论文精读、开题、中期、毕业答辩和竞赛答辩。支持 **Claude Code / Claude 桌面版**、**OpenAI Codex**，以及任何能运行 Python 的 AI 助手。
 
 <p align="center">
-  <img src="jnu-academic-ppt/themes/jnu-teal/preview/cover.png" width="49%" alt="jnu-teal 封面">
-  <img src="jnu-academic-ppt/themes/jnu-rigor/preview/cover.png" width="49%" alt="jnu-rigor 封面">
+  <img src="examples/attention-is-all-you-need/preview/teal-s07.jpg" width="49%" alt="示例：Transformer 结构页">
+  <img src="examples/attention-is-all-you-need/preview/teal-s14.jpg" width="49%" alt="示例：消融实验图表页">
 </p>
+<p align="center"><sub>以上两页出自下方的 <a href="#效果展示一份真实的论文精读">Transformer 论文精读示例</a>，由本技能生成，所有文字、表格和图表都可以直接编辑</sub></p>
 
 ---
 
@@ -26,6 +27,47 @@
 进入文件页后点右上角的下载按钮（Download raw file）即可；也可以点绿色的 **Code → Download ZIP** 一次性下载全部。各模板的样子见下文的 [五套主题](#五套主题) 预览。
 
 > **字体说明**：为了控制体积，模板里没有内嵌字体。模板 3、5 用到的**思源宋体 / 思源黑体**是免费开源字体，可从 [Adobe Fonts 的 GitHub](https://github.com/adobe-fonts) 下载安装；没安装时 PowerPoint 会自动用系统字体代替，排版可能略有变化。模板 5 的英文标题原本使用商业字体 Akzidenz-Grotesk，未安装时会显示为替代字体。
+
+## 效果展示：一份真实的论文精读
+
+用本技能为 *Attention Is All You Need*（Vaswani et al., NIPS 2017）做的约 20 分钟精读汇报，共 21 页，分为问题与动机、方法拆解、论文证据、复现与评价、对我们的启发五章。实验部分用原文 Table 3 做成了原生可编辑图表，并对照了一份 GitHub 上的第三方复现结果。
+
+<p align="center">
+  <img src="examples/attention-is-all-you-need/preview/teal-s01.jpg" width="49%" alt="封面">
+  <img src="examples/attention-is-all-you-need/preview/teal-s13.jpg" width="49%" alt="头数实验图表">
+  <img src="examples/attention-is-all-you-need/preview/teal-s17.jpg" width="49%" alt="复现口径对比">
+  <img src="examples/attention-is-all-you-need/preview/teal-s20.jpg" width="49%" alt="对我们的启发">
+</p>
+
+**同一份内容，换一套主题**：只改一个参数，就能生成下面四种风格，内容一字不改。
+
+<p align="center">
+  <img src="examples/attention-is-all-you-need/preview/four-themes-s13.jpg" width="90%" alt="同一页在四套主题中的效果">
+</p>
+
+四份成品 .pptx、全部 21 页的总览图、内容源文件 `deck.json` 和原文配图都在 [`examples/attention-is-all-you-need/`](examples/attention-is-all-you-need)，可以直接下载。
+
+### 模拟导师问答（节选）
+
+交付 PPT 时，技能会同时给出一份模拟问答。每题都写明可能怎么问、建议怎么答，以及**你现在还缺什么材料**。它不替你编答案，而是提前告诉你哪里会被问住。
+
+> **Q：自注意力每层是 O(n²·d)，为什么还说比 RNN 快？**（P5）
+>
+> **建议怎么答**：关键在串行操作数，自注意力是 O(1)，RNN 是 O(n)，前者可以整层并行；而且当 n < d 时（句子级翻译很常见），每层计算量也更小。
+
+> **Q：第三方复现得到 26.4 BLEU，能说明复现成功吗？**（P16）
+>
+> **建议怎么答**：不能直接和论文的 27.3 比，数据集、分词方式、BLEU 计算工具都不同，只能说明实现能在小数据集上正常收敛。
+>
+> **你还缺什么**：用统一口径（如 sacreBLEU）的结果，以及同一数据集上的其他基线。
+
+> **Q：Multi30K 只有约 2.9 万句对，用 base 规模的模型会不会过拟合？**（P17）
+>
+> **建议怎么答**：模型容量明显偏大，通常要换更小的模型或加强正则。
+>
+> **你还缺什么**：小模型对照，或训练/验证损失曲线。README 只给了最低损失值，看不出过拟合发生在哪个阶段。
+
+完整 8 题见 [模拟导师问答.md](examples/attention-is-all-you-need/模拟导师问答.md)。
 
 ## 它和"让 AI 直接做个 PPT"有什么不同
 
@@ -130,7 +172,7 @@ python jnu-academic-ppt/scripts/check_deck.py 组会.pptx --theme jnu-teal
 
 - `meta.duration_minutes`：写 10 分钟以内时自动进入**紧凑模式**，省掉目录页和章节过渡页；也可以用 `meta.presentation_mode` 写 `"compact"` 或 `"standard"` 来强制指定。
 - 顶层 `qa`：结构化的模拟问答，会以精简版（600 字以内，按整题取舍）写进结尾页备注。
-- `layout: "chart"`：原生可编辑的柱状图、条形图和折线图，数据会嵌进 PPT 里的 Excel 工作簿。
+- `layout: "chart"`：原生可编辑的柱状图、条形图和折线图，数据会嵌进 PPT 里的 Excel 工作簿；可以在柱子上标数值，变化量图可以用红绿两色区分下降和提升。
 
 ### AI 生图
 
@@ -157,6 +199,7 @@ jnu-academic-ppt-skill/
 ├── README.md
 ├── LICENSE
 ├── templates/             # ← 五套暨大 PPT 模板，不用 AI 也能直接下载使用
+├── examples/              # ← 完整示例：Transformer 论文精读（四种主题的成品 + 模拟问答）
 ├── .github/workflows/     # 自动冒烟测试
 └── jnu-academic-ppt/      # ← 技能本体，安装时只需要这个文件夹
     ├── SKILL.md           # 技能入口（AI 读这个）

@@ -1,0 +1,33 @@
+MIT License
+
+Copyright (c) 2026 jnu-academic-ppt-skill contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+素材说明 / Asset notice
+
+jnu-academic-ppt/themes/ 目录中的背景图、校徽、校园照片及版式设计来自
+暨南大学发布的 PPT 模板，相关权利归原权利人所有，不在上述 MIT 许可范围内。
+
+The backgrounds, university emblem, campus photographs and layout designs in
+jnu-academic-ppt/themes/ are derived from presentation templates published by
+Jinan University. They remain the property of their respective rights holders
+and are NOT covered by the MIT License above.

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="864" viewBox="0 0 1536 864">
+  <rect width="1536" height="864" fill="#F7F9FC"/>
+  <text x="768" y="95" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="46" font-weight="700" fill="#33477A">示例技术路线</text>
+  <text x="768" y="145" text-anchor="middle" font-family="Microsoft YaHei, Arial" font-size="22" fill="#6B7280">可替换为用户自己的真实方法图；本图不表示实验结果</text>
+
+  <g font-family="Microsoft YaHei, Arial">
+    <rect x="96" y="260" width="320" height="330" rx="28" fill="#FFFFFF" stroke="#C9D3E8" stroke-width="4"/>
+    <circle cx="256" cy="335" r="46" fill="#EEF1F8" stroke="#5B7BBF" stroke-width="4"/>
+    <path d="M226 335h60M256 305v60" stroke="#5B7BBF" stroke-width="10" stroke-linecap="round"/>
+    <text x="256" y="430" text-anchor="middle" font-size="34" font-weight="700" fill="#33477A">输入与质控</text>
+    <text x="256" y="485" text-anchor="middle" font-size="24" fill="#6B7280">数据检查 · 划分 · 预处理</text>
+    <text x="256" y="530" text-anchor="middle" font-size="22" fill="#6B7280">明确样本量与评测口径</text>
+
+    <rect x="608" y="260" width="320" height="330" rx="28" fill="#FFFFFF" stroke="#C9D3E8" stroke-width="4"/>
+    <circle cx="768" cy="335" r="46" fill="#EEF1F8" stroke="#5B7BBF" stroke-width="4"/>
+    <path d="M735 350l33-42 33 42M744 350h48" fill="none" stroke="#5B7BBF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="768" y="430" text-anchor="middle" font-size="34" font-weight="700" fill="#33477A">建模与消融</text>
+    <text x="768" y="485" text-anchor="middle" font-size="24" fill="#6B7280">主方法 · 基线 · 关键组件</text>
+    <text x="768" y="530" text-anchor="middle" font-size="22" fill="#6B7280">固定随机种子与训练预算</text>
+
+    <rect x="1120" y="260" width="320" height="330" rx="28" fill="#FFFFFF" stroke="#C9D3E8" stroke-width="4"/>
+    <circle cx="1280" cy="335" r="46" fill="#EEF1F8" stroke="#5B7BBF" stroke-width="4"/>
+    <path d="M1245 360v-28M1280 360v-55M1315 360v-78" stroke="#5B7BBF" stroke-width="12" stroke-linecap="round"/>
+    <text x="1280" y="430" text-anchor="middle" font-size="34" font-weight="700" fill="#33477A">评测与解释</text>
+    <text x="1280" y="485" text-anchor="middle" font-size="24" fill="#6B7280">指标 · 方差 · 失败案例</text>
+    <text x="1280" y="530" text-anchor="middle" font-size="22" fill="#6B7280">报告限制并形成下一步</text>
+
+    <path d="M440 425h132" stroke="#7E93C6" stroke-width="8" stroke-linecap="round"/>
+    <path d="M555 405l24 20-24 20" fill="none" stroke="#7E93C6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M952 425h132" stroke="#7E93C6" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1067 405l24 20-24 20" fill="none" stroke="#7E93C6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="330" y="690" width="876" height="74" rx="37" fill="#4A639F"/>
+    <text x="768" y="738" text-anchor="middle" font-size="27" font-weight="700" fill="#FFFFFF">每一步都保留来源、版本、参数与可复现实验记录</text>
+  </g>
+</svg>

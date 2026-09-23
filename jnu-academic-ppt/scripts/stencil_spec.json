@@ -1,0 +1,233 @@
+{
+  "_comment": "把原始模板提炼成「外壳页」。keep=顶层白名单；drop=顶层黑名单；drop_nested=穿透组合删除；clear_text=清空文字但保留形状。shells 顺序即 stencil.pptx 里的页序。",
+  "themes": {
+    "jnu-teal": {
+      "source": "暨大ppt模板2-大气通用.pptx",
+      "shells": [
+        {
+          "id": "cover",
+          "slide": 1,
+          "keep": [
+            "底图",
+            "大白条",
+            "配图"
+          ]
+        },
+        {
+          "id": "base",
+          "slide": 4,
+          "keep": [
+            "底图",
+            "大白条",
+            "直接连接符 14"
+          ]
+        },
+        {
+          "id": "closing",
+          "slide": 18,
+          "keep": [
+            "底图",
+            "图片 7"
+          ]
+        }
+      ]
+    },
+    "jnu-defense": {
+      "source": "暨大ppt模板4-蓝色简约.pptx",
+      "shells": [
+        {
+          "id": "cover",
+          "slide": 1,
+          "keep": [
+            "矩形 9",
+            "图片 104",
+            "组合 27"
+          ]
+        },
+        {
+          "id": "base",
+          "slide": 3,
+          "keep": [
+            "组合 72"
+          ],
+          "_note": "slide 3 是白底内容页（slide 5 是深青底，信息密集的组会不好读）；只留 矩形77 白条 + 矩形78 青色下划线，标签由引擎按章节重画",
+          "drop_nested": [
+            "组合 82",
+            "文本框 73",
+            "文本框 74",
+            "文本框 75",
+            "文本框 76",
+            "文本框 79",
+            "文本框 80",
+            "文本框 81",
+            "文本框 83",
+            "文本框 84"
+          ]
+        },
+        {
+          "id": "toc",
+          "slide": 2,
+          "keep": [
+            "矩形 4",
+            "矩形 5",
+            "图片 1"
+          ]
+        }
+      ]
+    },
+    "jnu-rigor": {
+      "source": "暨大ppt模板5-严谨有序.pptx",
+      "shells": [
+        {
+          "id": "cover",
+          "slide": 1,
+          "keep": [
+            "Group 2",
+            "Group 5",
+            "Group 8",
+            "Group 19",
+            "Group 22",
+            "图片 34",
+            "Freeform 25"
+          ]
+        },
+        {
+          "id": "base",
+          "slide": 4,
+          "keep": [
+            "Group 2",
+            "Group 5",
+            "Group 8"
+          ]
+        },
+        {
+          "id": "toc",
+          "slide": 2,
+          "keep": [
+            "图片 34",
+            "Group 2",
+            "Group 20",
+            "Group 23",
+            "Group 28",
+            "Group 31",
+            "Freeform 34"
+          ]
+        }
+      ]
+    },
+    "jnu-crisp": {
+      "source": "暨大ppt模板1-清爽简洁.pptx",
+      "shells": [
+        {
+          "id": "cover",
+          "slide": 1,
+          "keep": [
+            "图片 1",
+            "矩形 2",
+            "图片 6",
+            "任意多边形: 形状 69",
+            "组合 63",
+            "图片 66",
+            "图片 68",
+            "图片 79"
+          ],
+          "drop_nested": [
+            "文本框 3"
+          ]
+        },
+        {
+          "id": "base",
+          "slide": 4,
+          "keep": [
+            "组合 111"
+          ],
+          "clear_text": [
+            "组合 111"
+          ]
+        },
+        {
+          "id": "closing",
+          "slide": 6,
+          "keep": [
+            "图片 1",
+            "矩形 2",
+            "组合 3",
+            "图片 6",
+            "任意多边形: 形状 69",
+            "组合 63"
+          ],
+          "drop_nested": [
+            "文本框 3"
+          ]
+        }
+      ]
+    },
+    "jnu-red": {
+      "source": "暨大ppt模板3-红色主题.pptx",
+      "shells": [
+        {
+          "id": "cover",
+          "slide": 1,
+          "drop": [
+            "TextBox 39",
+            "TextBox 50",
+            "TextBox 51",
+            "TextBox 52"
+          ]
+        },
+        {
+          "id": "base",
+          "slide": 4,
+          "drop": [
+            "TextBox 82",
+            "TextBox 83",
+            "TextBox 84",
+            "TextBox 85",
+            "TextBox 86",
+            "TextBox 87",
+            "TextBox 88",
+            "AutoShape 13",
+            "Group 14",
+            "Group 16",
+            "Group 19",
+            "Group 22",
+            "Group 25",
+            "Group 28",
+            "Group 31",
+            "Group 33",
+            "Group 36",
+            "Group 39",
+            "Group 42",
+            "Group 45",
+            "Group 48",
+            "Group 50",
+            "Group 53",
+            "Group 56",
+            "Group 59",
+            "Group 62",
+            "Group 65",
+            "Group 67",
+            "Group 70",
+            "Group 73",
+            "Group 76",
+            "Group 79"
+          ]
+        },
+        {
+          "id": "toc",
+          "slide": 3,
+          "drop": [
+            "TextBox 20",
+            "TextBox 21",
+            "AutoShape 18",
+            "AutoShape 19"
+          ],
+          "drop_nested": [
+            "TextBox 27",
+            "TextBox 32"
+          ]
+        }
+      ]
+    }
+  }
+}

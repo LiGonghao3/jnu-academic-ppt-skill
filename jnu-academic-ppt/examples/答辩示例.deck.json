@@ -1,0 +1,110 @@
+{
+  "theme": "jnu-rigor",
+  "meta": {
+    "title": "面向长尾分布的病理切片分类方法研究",
+    "subtitle": "Graduation thesis defense",
+    "presenter": "张同学",
+    "affiliation": "信息科学技术学院 计算机科学与技术",
+    "advisor": "李老师 教授",
+    "date": "2026 年 5 月",
+    "file_name": "毕业答辩示例",
+    "duration_minutes": 15,
+    "audience": "答辩委员会",
+    "presentation_mode": "standard"
+  },
+  "qa": [
+    {
+      "question": "为什么不直接增加尾部样本？",
+      "answer": "病理亚型标注依赖专家且罕见病例天然稀缺，因此方法目标是在固定标注预算下改善尾部表征。"
+    },
+    {
+      "question": "跨中心泛化是否验证充分？",
+      "answer": "目前只覆盖两个来源，这是明确限制；后续计划采用三中心外部测试并报告中心间置信区间。"
+    },
+    {
+      "question": "提升是否来自额外训练开销？",
+      "answer": "训练开销约为基线的 1.12 倍，同时保留等训练时长对照；主要增益仍来自表征与分类器重校准。"
+    }
+  ],
+  "chapters": [
+    {"title": "选题背景与意义", "title_en": "Background and significance"},
+    {"title": "研究方法与过程", "title_en": "Method and process"},
+    {"title": "研究成果与展示", "title_en": "Results"},
+    {"title": "总结与致谢", "title_en": "Summary and acknowledgments"}
+  ],
+  "slides": [
+    {"layout": "cover"},
+    {"layout": "toc", "title": "目录", "kicker": "CONTENTS"},
+
+    {"layout": "section", "title": "选题背景与意义", "title_en": "Background and significance"},
+    {"layout": "bullets", "title": "长尾类别占病例的 12%，却贡献了 63% 的误诊",
+     "kicker": "问题从哪来",
+     "lead": "临床最需要辅助的恰恰是罕见亚型，而现有模型在这些类别上几乎失效。",
+     "bullets": [
+       "公开数据集中最罕见的 20 个亚型合计样本不足 3%",
+       "主流方法在头部类别 Top-1 超过 92%，尾部类别跌到 41%",
+       "重采样和重加权会牺牲头部精度，临床不可接受",
+       "标注成本高，靠扩充尾部样本解决不现实"
+     ],
+     "notes": "数据来源：TCGA-BRCA 统计 + 合作医院 2023 年回顾性病例。误诊率口径为病理科二次复核修正率。"},
+    {"layout": "compare", "title": "两类现有思路各自的死角", "chapter": 1,
+     "sides": [
+       {"title": "重采样 / 重加权", "bullets": ["尾部涨 6 个点", "头部掉 4 个点", "整体 F1 反而下降"]},
+       {"title": "解耦表征与分类器", "bullets": ["头部基本不掉", "尾部只涨 2 个点", "对极端长尾几乎无效"], "color": "warn"}
+     ]},
+
+    {"layout": "section", "title": "研究方法与过程", "title_en": "Method and process"},
+    {"layout": "steps", "title": "方法分三步走", "chapter": 2,
+     "steps": [
+       {"title": "形态感知增强", "text": "约束裁剪必须覆盖病灶区"},
+       {"title": "类别原型对比", "text": "为每个亚型维护可更新原型"},
+       {"title": "尾部敏感重校准", "text": "只在分类器层做温度校准"}
+     ]},
+    {"layout": "image-full", "title": "总体技术路线", "chapter": 2,
+     "image": "../assets/sample-pipeline.png", "caption": "示例技术路线图；正式汇报请替换为真实方法图",
+     "notes": "正式使用时换成自己的技术路线图。答辩这页通常讲 2 分钟，备注里写好每个模块的一句话说明。"},
+    {"layout": "two-col", "title": "实验设置", "chapter": 2,
+     "columns": [
+       {"title": "数据", "bullets": ["TCGA-BRCA 1097 例", "合作医院 412 例", "共 32 个亚型，最长尾比 1:214"]},
+       {"title": "协议", "bullets": ["五折交叉验证", "三个随机种子", "切片级评测，与文献口径一致"]}
+     ]},
+
+    {"layout": "section", "title": "研究成果与展示", "title_en": "Results"},
+    {"layout": "kpi", "title": "三项主要指标", "chapter": 3,
+     "items": [
+       {"value": "+9.4", "label": "尾部类别 F1 提升", "note": "个百分点，对比最强基线", "color": "ok"},
+       {"value": "-0.3", "label": "头部类别代价", "note": "几乎无损"},
+       {"value": "1.12×", "label": "训练开销", "note": "相对基线"}
+     ], "source": "演示数据，仅用于版式与工作流测试"},
+    {"layout": "table", "title": "与四个代表性方法的对比", "chapter": 3,
+     "header": ["方法", "头部 F1", "尾部 F1", "总体"],
+     "rows": [
+       ["交叉熵基线", "0.91", "0.38", "0.71"],
+       ["重加权 (LDAM)", "0.87", "0.44", "0.70"],
+       ["解耦训练 (cRT)", "0.90", "0.40", "0.72"],
+       ["本文方法", "0.91", "0.52", "0.78"]
+     ],
+     "notes": "被问「为什么不比 XX」时的答法：该方法需要像素级标注，我们的数据只有切片级标签，不可比。"},
+    {"layout": "quote", "title": "核心结论", "chapter": 3,
+     "text": "把长尾问题当成表征问题而不是采样问题，可以在不牺牲头部精度的前提下改善尾部。",
+     "source": "本文第 4 章"},
+
+    {"layout": "section", "title": "总结与致谢", "title_en": "Summary and acknowledgments"},
+    {"layout": "cards", "title": "创新点与不足", "chapter": 4,
+     "cards": [
+       {"tag": "创新 1", "title": "形态感知增强", "text": "首次把病灶覆盖率作为增强约束"},
+       {"tag": "创新 2", "title": "可更新类别原型", "text": "缓解尾部类别表征漂移"},
+       {"tag": "不足", "title": "跨中心泛化未验证", "text": "仅在两个来源上做过实验", "tag_color": "warn"}
+     ],
+     "notes": "主动说不足，比被评委问出来好。准备好一句「下一步会在三中心数据上验证」。"},
+    {"layout": "bullets", "title": "致谢", "chapter": 4,
+     "bullets": [
+       "感谢李老师在选题和技术路线上的指导",
+       "感谢合作医院病理科提供数据并完成二次标注",
+       "感谢课题组师兄师姐在实验平台和代码复现上的帮助",
+       "感谢各位评委老师审阅本文"
+     ]},
+
+    {"layout": "closing", "title": "恳请各位老师批评指正", "subtitle": "张同学 · 2026 年 5 月"}
+  ]
+}

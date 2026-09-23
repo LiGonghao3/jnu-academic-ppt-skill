@@ -1,0 +1,275 @@
+{
+  "theme": "jnu-teal",
+  "meta": {
+    "title": "多模态对比学习在病理切片分类中的应用",
+    "subtitle": "第 12 周组会汇报",
+    "presenter": "张同学",
+    "affiliation": "信息科学技术学院 2024 级",
+    "advisor": "李老师 教授",
+    "date": "2026-09-22",
+    "file_name": "组会示例",
+    "duration_minutes": 10,
+    "audience": "课题组导师与同学",
+    "presentation_mode": "compact"
+  },
+  "qa": [
+    {
+      "question": "你怎么证明掉点不是模型结构造成的？",
+      "answer": "保持模型、优化器和训练轮数不变，只逐项回退数据增强；恢复裁剪范围后，三个随机种子都回到论文报告区间。"
+    },
+    {
+      "question": "下一步最值得优先验证什么？",
+      "answer": "先统一切片级评测口径，再复核疑似噪声标签；否则继续调参得到的提升无法与文献公平比较。"
+    }
+  ],
+  "chapters": [
+    {
+      "title": "本周主线",
+      "title_en": "This Week"
+    },
+    {
+      "title": "实验与结果",
+      "title_en": "Experiments"
+    },
+    {
+      "title": "卡点与求助",
+      "title_en": "Blockers"
+    },
+    {
+      "title": "下周计划",
+      "title_en": "Next Steps"
+    }
+  ],
+  "slides": [
+    {
+      "layout": "cover"
+    },
+    {
+      "layout": "toc",
+      "title": "本次汇报"
+    },
+    {
+      "layout": "section",
+      "title": "本周主线",
+      "subtitle": "把上周的 baseline 跑通并定位了掉点原因"
+    },
+    {
+      "layout": "bullets",
+      "title": "一句话：掉点来自数据增强，不是模型",
+      "kicker": "结论先行",
+      "lead": "把 RandomResizedCrop 的 scale 下限从 0.08 提到 0.4，Top-1 直接回到 78.2%。",
+      "bullets": [
+        "复现了 baseline，但首轮只有 71.4%，比论文低 6.8 个点",
+        "逐项消融后锁定：强裁剪把病灶区域裁没了，正样本对根本不是同一个病灶",
+        "改完增强后三个随机种子稳定在 78.0%–78.4%，与论文 78.5% 基本对齐",
+        "顺手把训练脚本的 seed 固定逻辑补上了，之前 DataLoader 的 worker 没设种子"
+      ],
+      "notes": "这页讲 2 分钟。重点强调是数据增强问题不是模型问题，避免老师往模型结构上问。"
+    },
+    {
+      "layout": "kpi",
+      "title": "三个种子的复现结果",
+      "kicker": "可复现性",
+      "items": [
+        {
+          "value": "78.2%",
+          "label": "Top-1 准确率",
+          "note": "论文 78.5%"
+        },
+        {
+          "value": "±0.2",
+          "label": "三种子标准差",
+          "note": "此前 ±1.9"
+        },
+        {
+          "value": "4.1h",
+          "label": "单次训练耗时",
+          "note": "A100 ×1"
+        }
+      ],
+      "source": "演示数据，仅用于版式与工作流测试"
+    },
+    {
+      "layout": "section",
+      "title": "实验与结果"
+    },
+    {
+      "layout": "two-col",
+      "title": "消融实验：到底是哪一项在起作用",
+      "chapter": 2,
+      "columns": [
+        {
+          "title": "有效的改动",
+          "bullets": [
+            "裁剪 scale 下限 0.08 → 0.4",
+            "颜色抖动强度减半",
+            "固定 DataLoader worker seed"
+          ]
+        },
+        {
+          "title": "试过但没用的",
+          "bullets": [
+            "加大 batch size 到 512",
+            "换 LARS 优化器",
+            "温度系数从 0.07 调到 0.1",
+            "投影头加一层"
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "compare",
+      "title": "改动前后的失败案例对比",
+      "chapter": 2,
+      "sides": [
+        {
+          "title": "改动前：正样本对失配",
+          "bullets": [
+            "裁剪后两个视图落在不同组织区域",
+            "模型学到的是「染色风格」而非病灶形态",
+            "低置信度样本集中在腺癌/腺瘤边界"
+          ]
+        },
+        {
+          "title": "改动后",
+          "bullets": [
+            "两个视图至少有 40% 面积重叠",
+            "注意力图集中到病灶中心",
+            "边界类错误下降 37%"
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "chart",
+      "title": "修正增强后，三个种子都稳定恢复",
+      "chapter": 2,
+      "chart_type": "column",
+      "categories": [
+        "Seed 1",
+        "Seed 2",
+        "Seed 3"
+      ],
+      "series": [
+        {
+          "name": "Top-1 (%)",
+          "values": [78.0, 78.2, 78.4]
+        }
+      ],
+      "value_min": 70,
+      "value_max": 82,
+      "caption": "原生可编辑图表；演示数据不代表真实实验结果",
+      "source": "演示数据，仅用于版式与工作流测试"
+    },
+    {
+      "layout": "section",
+      "title": "卡点与求助"
+    },
+    {
+      "layout": "cards",
+      "title": "三件事想听听大家意见",
+      "chapter": 3,
+      "cards": [
+        {
+          "tag": "01",
+          "title": "显存不够",
+          "bullets": [
+            "batch 512 时 OOM",
+            "考虑梯度累积还是换卡？"
+          ]
+        },
+        {
+          "tag": "02",
+          "title": "标注噪声",
+          "bullets": [
+            "约 3% 切片标签存疑",
+            "要不要人工复核一遍"
+          ]
+        },
+        {
+          "tag": "03",
+          "title": "评测口径",
+          "bullets": [
+            "论文按切片级评测",
+            "我们按 patch 级，数不可比"
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "quote",
+      "title": "本周最大的教训",
+      "chapter": 3,
+      "text": "复现掉点先查数据管线，别一上来就改模型 —— 这次浪费了两天在调优化器上。",
+      "source": "第 12 周复盘"
+    },
+    {
+      "layout": "section",
+      "title": "下周计划"
+    },
+    {
+      "layout": "timeline",
+      "title": "下周四天排期",
+      "chapter": 4,
+      "steps": [
+        {
+          "label": "周一",
+          "title": "切片级评测",
+          "text": "对齐论文口径"
+        },
+        {
+          "label": "周二—三",
+          "title": "标注复核",
+          "text": "抽 200 张人工过"
+        },
+        {
+          "label": "周四",
+          "title": "梯度累积",
+          "text": "模拟 batch 512"
+        },
+        {
+          "label": "周五",
+          "title": "组会汇报",
+          "text": "出对比表"
+        }
+      ]
+    },
+    {
+      "layout": "steps",
+      "title": "标注复核的三步走",
+      "chapter": 4,
+      "steps": [
+        {
+          "title": "置信度排序",
+          "text": "按模型 margin 取最可疑的 200 张"
+        },
+        {
+          "title": "双人盲标",
+          "text": "我和师兄各标一遍"
+        },
+        {
+          "title": "分歧仲裁",
+          "text": "不一致的交给导师定"
+        }
+      ]
+    },
+    {
+      "layout": "image-text",
+      "title": "用一张方法图收束本周主线",
+      "chapter": 4,
+      "image": "../assets/sample-pipeline.png",
+      "caption": "示例概念图（确定性 SVG 栅格化，非实验结果）",
+      "bullets": [
+        "图片路径相对 deck.json 解析，移动项目后仍可复现",
+        "正式汇报应替换为真实方法图或可追溯的原文图",
+        "AI 图片只用于概念示意，不能伪造实验结果"
+      ],
+      "notes": "正式使用时把 image 换成自己的图片路径；缺图会停止导出，只有显式调试参数才允许占位框。"
+    },
+    {
+      "layout": "closing",
+      "title": "谢谢",
+      "subtitle": "欢迎提问 / 张同学 · 2026-09-22"
+    }
+  ]
+}

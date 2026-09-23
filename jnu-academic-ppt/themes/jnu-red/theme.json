@@ -1,0 +1,237 @@
+{
+  "name": "jnu-red",
+  "label": "红色主题（红绸 · 百年暨南水印）",
+  "source_template": "暨大ppt模板3-红色主题.pptx",
+  "provenance": "暨南大学官方模板",
+  "photo_credit": "沿用原模板；未提供独立摄影署名",
+  "meta_format": {
+    "presenter_label": "汇报人",
+    "advisor_label": "指导教师",
+    "affiliation_separator": "｜",
+    "date_label": "日期",
+    "show_date_label": false
+  },
+  "best_for": "党团活动、思政/主题教育汇报、红色文化类比赛答辩、学院庆典。",
+  "avoid_for": "学术组会和论文答辩 —— 背景花、色温高，会显得不严肃。",
+  "canvas_note": "画布 20 × 11.25 英寸。",
+  "palette": {
+    "primary": "#C91313",
+    "primary_dark": "#980000",
+    "secondary": "#DA3D28",
+    "accent": "#F58457",
+    "accent_light": "#FDBE90",
+    "surface": "#FBEFE8",
+    "surface_alt": "#FEF7F3",
+    "line": "#EFC9B4",
+    "ink": "#54331F",
+    "muted": "#8A6A58",
+    "white": "#FFFFFF",
+    "ok": "#2F7D5B",
+    "warn": "#B4762A",
+    "risk": "#A8443C"
+  },
+  "fonts": {
+    "display": {
+      "ea": "思源宋体",
+      "latin": "Times New Roman",
+      "fallback": [
+        "Source Han Serif CN",
+        "宋体",
+        "SimSun"
+      ]
+    },
+    "heading": {
+      "ea": "思源宋体",
+      "latin": "Times New Roman",
+      "fallback": [
+        "Source Han Serif CN",
+        "宋体",
+        "SimSun"
+      ]
+    },
+    "body": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线"
+      ]
+    },
+    "mono": {
+      "ea": "微软雅黑",
+      "latin": "Consolas",
+      "fallback": [
+        "Courier New"
+      ]
+    },
+    "numeral": {
+      "ea": "思源宋体",
+      "latin": "Times New Roman",
+      "fallback": [
+        "Source Han Serif CN",
+        "宋体",
+        "SimSun"
+      ]
+    }
+  },
+  "font_risk": "原模板标题用「可画寒风体-简」（Canva 字体，本机没有）和思源宋体，靠 67MB 内嵌字体硬撑。主题包已剥离内嵌字体，标题改走思源宋体→宋体回退链，字形会比原模板朴素一些。",
+  "type_scale": {
+    "cover_title": 62,
+    "cover_sub": 22,
+    "cover_meta": 18,
+    "section_no": 90,
+    "section_title": 48,
+    "title": 34,
+    "kicker": 15,
+    "lead": 25,
+    "body": 22,
+    "small": 18,
+    "caption": 15,
+    "card_title": 23,
+    "card_body": 18,
+    "min_body": 16,
+    "toc_num": 40,
+    "card_tag": 22,
+    "kpi_value": 56,
+    "quote": 36
+  },
+  "geometry": {
+    "canvas": {
+      "w": 20.0,
+      "h": 11.25
+    },
+    "title": {
+      "l": 1.8,
+      "t": 1.0,
+      "w": 16.4,
+      "h": 1.05
+    },
+    "kicker": {
+      "l": 1.8,
+      "t": 0.7,
+      "w": 16.4,
+      "h": 0.3
+    },
+    "body": {
+      "l": 1.8,
+      "t": 2.6,
+      "w": 16.4,
+      "h": 7.4
+    },
+    "rule": {
+      "l": 1.8,
+      "t": 2.35,
+      "w": 16.4,
+      "h": 0.0
+    },
+    "footer": {
+      "l": 1.8,
+      "t": 10.45,
+      "w": 16.4,
+      "h": 0.36
+    },
+    "cover_title": {
+      "l": 2.54,
+      "t": 2.0,
+      "w": 15.3,
+      "h": 2.4
+    },
+    "cover_sub": {
+      "l": 3.21,
+      "t": 4.4,
+      "w": 13.6,
+      "h": 0.7
+    },
+    "cover_meta": {
+      "l": 6.8,
+      "t": 7.1,
+      "w": 6.4,
+      "h": 1.45
+    },
+    "section_no": {
+      "l": 7.37,
+      "t": 1.58,
+      "w": 5.26,
+      "h": 2.1
+    },
+    "section_title": {
+      "l": 2.69,
+      "t": 3.53,
+      "w": 14.63,
+      "h": 1.8
+    },
+    "section_sub": {
+      "l": 2.69,
+      "t": 5.9,
+      "w": 14.63,
+      "h": 0.55
+    },
+    "closing_title": {
+      "l": 2.54,
+      "t": 3.2,
+      "w": 15.3,
+      "h": 2.4
+    },
+    "closing_sub": {
+      "l": 3.21,
+      "t": 5.7,
+      "w": 13.6,
+      "h": 0.7
+    }
+  },
+  "nav": {
+    "kind": "header-label",
+    "label": {
+      "l": 1.8,
+      "t": 0.68,
+      "w": 9.0,
+      "h": 0.4
+    },
+    "active": {
+      "fill": null,
+      "text": "primary_dark",
+      "bold": true,
+      "size": 22
+    },
+    "inactive": {
+      "fill": null,
+      "text": "muted",
+      "bold": false,
+      "size": 22
+    },
+    "max_items": 8
+  },
+  "shell_use": {
+    "cover": "cover",
+    "toc": "toc",
+    "section": "toc",
+    "content": "base",
+    "closing": "cover"
+  },
+  "notes": {
+    "contrast": "背景是暖橘渐变 + 校门水印，正文千万别用浅色；卡片一律铺 surface 白底再写字，否则对比度不过关。"
+  },
+  "defaults": {
+    "cover": {
+      "color": "primary",
+      "sub_color": "primary_dark",
+      "meta_color": "primary_dark",
+      "meta_align": "center",
+      "align": "center"
+    },
+    "closing": {
+      "color": "primary",
+      "sub_color": "primary_dark",
+      "align": "center"
+    },
+    "section": {
+      "no_color": "accent",
+      "color": "primary",
+      "no_align": "center"
+    },
+    "toc": {
+      "color": "primary"
+    }
+  },
+  "body_balance": 0.4
+}

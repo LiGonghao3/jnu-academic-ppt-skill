@@ -1,0 +1,25 @@
+name: 冒烟测试
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 安装依赖
+        run: python -m pip install -r jnu-academic-ppt/requirements.txt
+      - name: 运行冒烟测试
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python jnu-academic-ppt/scripts/smoke_test.py

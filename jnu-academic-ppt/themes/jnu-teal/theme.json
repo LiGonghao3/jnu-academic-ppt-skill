@@ -1,0 +1,237 @@
+{
+  "name": "jnu-teal",
+  "label": "大气通用（墨青 · 左侧章节导航）",
+  "source_template": "暨大ppt模板2-大气通用.pptx",
+  "provenance": "暨南大学官方模板",
+  "photo_credit": "沿用原模板；未提供独立摄影署名",
+  "meta_format": {
+    "presenter_label": "汇报人",
+    "advisor_label": "指导教师",
+    "affiliation_separator": "｜",
+    "date_label": "日期",
+    "show_date_label": false
+  },
+  "best_for": "每周组会、进展汇报、信息密集的内容页。留白大、章节位置一眼可见，最耐看。",
+  "avoid_for": "需要喜庆/活动感的场合。",
+  "palette": {
+    "primary": "#145D68",
+    "primary_dark": "#0E4049",
+    "secondary": "#6D9AA1",
+    "accent": "#3A7780",
+    "surface": "#E8EFF0",
+    "surface_alt": "#F4F8F8",
+    "line": "#A1BEC2",
+    "ink": "#1E2A2C",
+    "muted": "#5F7275",
+    "white": "#FFFFFF",
+    "ok": "#2F7D5B",
+    "warn": "#B4762A",
+    "risk": "#A8443C"
+  },
+  "fonts": {
+    "display": {
+      "ea": "微软雅黑 Light",
+      "latin": "Segoe UI Light",
+      "weight_bold": false,
+      "fallback": [
+        "Microsoft YaHei Light",
+        "微软雅黑",
+        "等线"
+      ]
+    },
+    "heading": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线",
+        "DengXian"
+      ]
+    },
+    "body": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线",
+        "DengXian"
+      ]
+    },
+    "mono": {
+      "ea": "微软雅黑",
+      "latin": "Consolas",
+      "fallback": [
+        "Courier New"
+      ]
+    },
+    "numeral": {
+      "ea": "等线 Light",
+      "latin": "DengXian Light",
+      "weight_bold": false,
+      "fallback": [
+        "DengXian",
+        "等线",
+        "微软雅黑"
+      ]
+    }
+  },
+  "type_scale": {
+    "cover_title": 40,
+    "cover_sub": 18,
+    "cover_meta": 14,
+    "section_no": 54,
+    "section_title": 32,
+    "title": 26,
+    "kicker": 12,
+    "lead": 19,
+    "body": 17,
+    "small": 14,
+    "caption": 11.5,
+    "card_title": 17,
+    "card_body": 13.5,
+    "min_body": 12,
+    "toc_num": 30,
+    "card_tag": 17,
+    "kpi_value": 40,
+    "quote": 27
+  },
+  "geometry": {
+    "canvas": {
+      "w": 13.333,
+      "h": 7.5
+    },
+    "title": {
+      "l": 2.55,
+      "t": 0.42,
+      "w": 10.25,
+      "h": 0.7
+    },
+    "kicker": {
+      "l": 2.55,
+      "t": 0.2,
+      "w": 10.25,
+      "h": 0.22
+    },
+    "body": {
+      "l": 2.55,
+      "t": 1.32,
+      "w": 10.25,
+      "h": 5.55
+    },
+    "rule": {
+      "l": 2.55,
+      "t": 1.16,
+      "w": 10.25,
+      "h": 0.0
+    },
+    "footer": {
+      "l": 2.55,
+      "t": 7.02,
+      "w": 10.25,
+      "h": 0.28
+    },
+    "cover_title": {
+      "l": 0.85,
+      "t": 2.32,
+      "w": 6.85,
+      "h": 1.55
+    },
+    "cover_sub": {
+      "l": 0.85,
+      "t": 3.95,
+      "w": 6.85,
+      "h": 0.75
+    },
+    "cover_meta": {
+      "l": 6.4,
+      "t": 5.72,
+      "w": 6.2,
+      "h": 1.3
+    },
+    "section_no": {
+      "l": 3.2,
+      "t": 1.9,
+      "w": 2.4,
+      "h": 1.6
+    },
+    "section_title": {
+      "l": 3.2,
+      "t": 3.45,
+      "w": 8.6,
+      "h": 1.3
+    },
+    "section_sub": {
+      "l": 3.25,
+      "t": 4.8,
+      "w": 8.6,
+      "h": 0.6
+    },
+    "closing_title": {
+      "l": 1.67,
+      "t": 2.8,
+      "w": 9.98,
+      "h": 1.6
+    },
+    "closing_sub": {
+      "l": 1.67,
+      "t": 4.45,
+      "w": 9.98,
+      "h": 0.7
+    }
+  },
+  "nav": {
+    "kind": "rail-left",
+    "tile": {
+      "l": 0.73,
+      "w": 1.52,
+      "h": 0.89
+    },
+    "span": {
+      "t": 0.45,
+      "b": 6.47
+    },
+    "gap": 0.39,
+    "numerals": "cjk",
+    "active": {
+      "fill": "white",
+      "text": "primary_dark",
+      "bold": true,
+      "size": 27
+    },
+    "inactive": {
+      "fill": "white",
+      "text": "#9CC0C5",
+      "bold": false,
+      "size": 23
+    },
+    "max_items": 6
+  },
+  "defaults": {
+    "cover": {
+      "color": "white",
+      "meta_color": "ink",
+      "meta_align": "center"
+    },
+    "closing": {
+      "color": "primary_dark",
+      "sub_color": "muted",
+      "align": "center"
+    },
+    "section": {
+      "no_color": "secondary",
+      "color": "ink"
+    }
+  },
+  "shell_use": {
+    "cover": "cover",
+    "toc": "base",
+    "section": "base",
+    "content": "base",
+    "closing": "closing"
+  },
+  "notes": {
+    "rail": "左侧是墨青色竖条（形状名 大白条），上面贴白色数字牌（!!标签N）。牌子最多 6 个，超过 6 章会自动改成条纹式紧凑排布。",
+    "fonts": "原模板未内嵌字体，微软雅黑在中文 Windows / WPS 上必然存在，换机零风险。"
+  },
+  "body_balance": 0.4
+}

@@ -1,0 +1,8 @@
+interface:
+  display_name: "暨大学术汇报 PPT"
+  short_description: "把组会、周报与答辩材料整理成可编辑的暨大风格 PPT"
+  brand_color: "#145D68"
+  default_prompt: "Use $jnu-academic-ppt to turn my weekly notes or defense materials into a JNU-style academic presentation."
+
+policy:
+  allow_implicit_invocation: true

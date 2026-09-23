@@ -1,0 +1,247 @@
+{
+  "name": "jnu-defense",
+  "label": "蓝色简约（深青 · 顶部 Tab 导航）",
+  "source_template": "暨大ppt模板4-蓝色简约.pptx",
+  "provenance": "暨南大学官方模板",
+  "photo_credit": "沿用原模板；未提供独立摄影署名",
+  "meta_format": {
+    "presenter_label": "汇报人",
+    "advisor_label": "指导教师",
+    "affiliation_separator": "｜",
+    "date_label": "日期",
+    "show_date_label": false
+  },
+  "best_for": "开题/中期/竞赛答辩。封面深色压得住场，顶部 Tab 让评委随时知道讲到第几部分。",
+  "avoid_for": "章节超过 5 个（顶部 Tab 会挤）。",
+  "palette": {
+    "primary": "#0F6A7B",
+    "primary_dark": "#004C54",
+    "deep": "#0A4652",
+    "secondary": "#AAC6CA",
+    "accent": "#138399",
+    "surface": "#EEF5F6",
+    "surface_alt": "#F7FAFA",
+    "line": "#CFE0E3",
+    "ink": "#323232",
+    "muted": "#6E7A7C",
+    "white": "#FFFFFF",
+    "ok": "#1F7A4D",
+    "warn": "#B4762A",
+    "risk": "#A8443C"
+  },
+  "fonts": {
+    "display": {
+      "ea": "微软雅黑 Light",
+      "latin": "Segoe UI Light",
+      "weight_bold": false,
+      "fallback": [
+        "Microsoft YaHei Light",
+        "微软雅黑"
+      ]
+    },
+    "heading": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线"
+      ]
+    },
+    "body": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线"
+      ]
+    },
+    "mono": {
+      "ea": "微软雅黑",
+      "latin": "Consolas",
+      "fallback": [
+        "Courier New"
+      ]
+    },
+    "numeral": {
+      "ea": "微软雅黑 Light",
+      "latin": "Segoe UI Light",
+      "weight_bold": false,
+      "fallback": [
+        "Microsoft YaHei Light",
+        "微软雅黑",
+        "等线"
+      ]
+    }
+  },
+  "type_scale": {
+    "cover_title": 38,
+    "cover_sub": 16,
+    "cover_meta": 14,
+    "section_no": 52,
+    "section_title": 30,
+    "title": 24,
+    "kicker": 12,
+    "lead": 18,
+    "body": 16.5,
+    "small": 13.5,
+    "caption": 11,
+    "card_title": 16,
+    "card_body": 13,
+    "min_body": 12,
+    "toc_num": 28,
+    "card_tag": 16,
+    "kpi_value": 38,
+    "quote": 26
+  },
+  "geometry": {
+    "canvas": {
+      "w": 13.333,
+      "h": 7.5
+    },
+    "title": {
+      "l": 0.7,
+      "t": 1.05,
+      "w": 11.95,
+      "h": 0.68
+    },
+    "kicker": {
+      "l": 0.7,
+      "t": 0.82,
+      "w": 11.95,
+      "h": 0.22
+    },
+    "body": {
+      "l": 0.7,
+      "t": 1.95,
+      "w": 11.95,
+      "h": 4.95
+    },
+    "rule": {
+      "l": 0.7,
+      "t": 1.8,
+      "w": 11.95,
+      "h": 0.0
+    },
+    "footer": {
+      "l": 0.7,
+      "t": 7.02,
+      "w": 11.95,
+      "h": 0.28
+    },
+    "cover_title": {
+      "l": 0.92,
+      "t": 2.75,
+      "w": 11.5,
+      "h": 1.2
+    },
+    "cover_sub": {
+      "l": 0.92,
+      "t": 4.02,
+      "w": 11.5,
+      "h": 0.55
+    },
+    "cover_meta": {
+      "l": 2.6,
+      "t": 4.9,
+      "w": 8.2,
+      "h": 1.8
+    },
+    "section_no": {
+      "l": 1.6,
+      "t": 2.35,
+      "w": 2.6,
+      "h": 1.7
+    },
+    "section_title": {
+      "l": 4.3,
+      "t": 2.75,
+      "w": 7.8,
+      "h": 1.1
+    },
+    "section_sub": {
+      "l": 4.35,
+      "t": 3.95,
+      "w": 7.8,
+      "h": 0.55
+    },
+    "closing_title": {
+      "l": 1.6,
+      "t": 2.9,
+      "w": 10.1,
+      "h": 1.3
+    },
+    "closing_sub": {
+      "l": 1.6,
+      "t": 4.3,
+      "w": 10.1,
+      "h": 0.6
+    }
+  },
+  "nav": {
+    "kind": "tabs-top",
+    "bar": {
+      "t": 0.14,
+      "h": 0.58,
+      "fill": "white"
+    },
+    "underline": {
+      "t": 0.63,
+      "h": 0.09,
+      "fill": "primary"
+    },
+    "span": {
+      "l": 0.65,
+      "r": 12.7
+    },
+    "tab_h": 0.64,
+    "tab_gap": 0.1,
+    "radius": 0.14,
+    "active": {
+      "fill": "primary",
+      "text": "white",
+      "bold": true,
+      "size": 14
+    },
+    "inactive": {
+      "fill": null,
+      "text": "muted",
+      "bold": false,
+      "size": 13
+    },
+    "max_items": 5
+  },
+  "shell_use": {
+    "cover": "cover",
+    "toc": "toc",
+    "section": "toc",
+    "content": "base",
+    "closing": "toc"
+  },
+  "notes": {
+    "dark_pages": "toc 外壳是深青满底，白字；content 外壳是白底。别在 toc 外壳上放深色文字。",
+    "base_alt": "原模板 slide 5 是深青底内容页，信息密集时可读性差，因此 base 取白底的 slide 3。"
+  },
+  "defaults": {
+    "cover": {
+      "color": "white",
+      "sub_color": "secondary",
+      "meta_color": "white",
+      "meta_align": "center",
+      "align": "center"
+    },
+    "closing": {
+      "color": "white",
+      "sub_color": "secondary",
+      "align": "center"
+    },
+    "section": {
+      "no_color": "secondary",
+      "color": "white"
+    },
+    "toc": {
+      "color": "white"
+    }
+  },
+  "nav_on_toc": false,
+  "body_balance": 0.4
+}

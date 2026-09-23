@@ -1,0 +1,243 @@
+{
+  "name": "jnu-rigor",
+  "label": "严谨有序（蓝紫 · 顶部横向导航 · 中英双语）",
+  "source_template": "暨大ppt模板5-严谨有序.pptx",
+  "provenance": "暨南大学官方模板",
+  "photo_credit": "沿用原模板；未提供独立摄影署名",
+  "meta_format": {
+    "presenter_label": "汇报人",
+    "advisor_label": "指导教师",
+    "affiliation_separator": "｜",
+    "date_label": "日期",
+    "show_date_label": false
+  },
+  "best_for": "毕业论文答辩、正式学术报告。标题自带英文副行，最像论文答辩。",
+  "avoid_for": "轻松的周汇报（气质偏重）。",
+  "canvas_note": "这套模板画布是 20 × 11.25 英寸（不是常见的 13.33 × 7.5），所有坐标都按大画布写。",
+  "palette": {
+    "primary": "#4A639F",
+    "primary_dark": "#33477A",
+    "secondary": "#7E93C6",
+    "accent": "#5B7BBF",
+    "surface": "#EEF1F8",
+    "surface_alt": "#F7F9FC",
+    "line": "#C9D3E8",
+    "ink": "#262626",
+    "muted": "#6B7280",
+    "white": "#FFFFFF",
+    "ok": "#2F7D5B",
+    "warn": "#B4762A",
+    "risk": "#A8443C"
+  },
+  "fonts": {
+    "display": {
+      "ea": "Source Han Sans CN Light",
+      "latin": "Segoe UI Light",
+      "weight_bold": false,
+      "fallback": [
+        "思源黑体 CN Light",
+        "微软雅黑 Light",
+        "微软雅黑"
+      ]
+    },
+    "heading": {
+      "ea": "Source Han Sans CN",
+      "latin": "Arial",
+      "fallback": [
+        "思源黑体 CN",
+        "微软雅黑"
+      ]
+    },
+    "body": {
+      "ea": "微软雅黑",
+      "latin": "Arial",
+      "fallback": [
+        "Microsoft YaHei",
+        "等线"
+      ]
+    },
+    "mono": {
+      "ea": "微软雅黑",
+      "latin": "Consolas",
+      "fallback": [
+        "Courier New"
+      ]
+    },
+    "numeral": {
+      "ea": "Source Han Sans CN Light",
+      "latin": "Segoe UI Light",
+      "weight_bold": false,
+      "fallback": [
+        "思源黑体 CN Light",
+        "微软雅黑 Light",
+        "微软雅黑"
+      ]
+    }
+  },
+  "font_risk": "原模板用「思源黑体 1」+「Akzidenz-Grotesk」，两者都不是 Windows 自带，且模板靠内嵌字体（85MB）硬撑。主题包已剥离内嵌字体，正文改用微软雅黑，标题优先 Source Han Sans CN、装不到就退回微软雅黑。",
+  "type_scale": {
+    "cover_title": 72,
+    "cover_sub": 24,
+    "cover_meta": 18,
+    "section_no": 96,
+    "section_title": 46,
+    "title": 38,
+    "kicker": 17,
+    "lead": 28,
+    "body": 25,
+    "small": 21,
+    "caption": 17,
+    "card_title": 25,
+    "card_body": 20,
+    "min_body": 18,
+    "toc_num": 40,
+    "card_tag": 22,
+    "kpi_value": 56,
+    "quote": 36
+  },
+  "geometry": {
+    "canvas": {
+      "w": 20.0,
+      "h": 11.25
+    },
+    "title": {
+      "l": 1.99,
+      "t": 1.35,
+      "w": 16.02,
+      "h": 0.95
+    },
+    "kicker": {
+      "l": 1.99,
+      "t": 1.05,
+      "w": 16.02,
+      "h": 0.3
+    },
+    "body": {
+      "l": 1.99,
+      "t": 2.75,
+      "w": 16.02,
+      "h": 7.55
+    },
+    "rule": {
+      "l": 1.99,
+      "t": 2.48,
+      "w": 16.02,
+      "h": 0.0
+    },
+    "footer": {
+      "l": 1.99,
+      "t": 10.55,
+      "w": 16.02,
+      "h": 0.36
+    },
+    "cover_title": {
+      "l": 2.63,
+      "t": 4.9,
+      "w": 15.11,
+      "h": 2.2
+    },
+    "cover_sub": {
+      "l": 2.63,
+      "t": 3.95,
+      "w": 15.11,
+      "h": 0.95
+    },
+    "cover_meta": {
+      "l": 6.0,
+      "t": 7.45,
+      "w": 8.6,
+      "h": 1.6
+    },
+    "section_no": {
+      "l": 13.6,
+      "t": 3.9,
+      "w": 4.4,
+      "h": 4.4
+    },
+    "section_title": {
+      "l": 2.18,
+      "t": 4.6,
+      "w": 10.8,
+      "h": 1.55
+    },
+    "section_sub": {
+      "l": 2.18,
+      "t": 6.18,
+      "w": 10.8,
+      "h": 0.45
+    },
+    "closing_title": {
+      "l": 2.6,
+      "t": 4.4,
+      "w": 14.8,
+      "h": 1.7
+    },
+    "closing_sub": {
+      "l": 2.6,
+      "t": 6.2,
+      "w": 14.8,
+      "h": 0.7
+    },
+    "toc_body": {
+      "l": 1.99,
+      "t": 4.15,
+      "w": 16.02,
+      "h": 5.15
+    }
+  },
+  "nav": {
+    "kind": "bar-top",
+    "span": {
+      "l": 1.99,
+      "r": 18.0,
+      "t": 0.61,
+      "h": 0.32
+    },
+    "active": {
+      "fill": null,
+      "text": "primary_dark",
+      "bold": true,
+      "size": 20
+    },
+    "inactive": {
+      "fill": null,
+      "text": "#9AA3B5",
+      "bold": false,
+      "size": 19
+    },
+    "max_items": 5
+  },
+  "shell_use": {
+    "cover": "cover",
+    "toc": "toc",
+    "section": "toc",
+    "content": "base",
+    "closing": "toc"
+  },
+  "notes": {
+    "bilingual": "这套主题默认给章节标题配英文副行（deck.json 里写 title_en 即可；没写就不画）。",
+    "toc": "目录外壳右上有校徽圆标（y 0.79–4.01），所以单独声明了 toc_body 把目录往下压。"
+  },
+  "defaults": {
+    "cover": {
+      "color": "primary_dark",
+      "sub_color": "muted",
+      "meta_color": "ink",
+      "meta_align": "center"
+    },
+    "closing": {
+      "color": "primary_dark",
+      "sub_color": "muted",
+      "align": "center"
+    },
+    "section": {
+      "no_color": "secondary",
+      "color": "primary_dark",
+      "no_align": "center"
+    },
+    "toc": {
+      "color": "primary_dark"
+    }
+  },
+  "body_balance": 0.4
+}

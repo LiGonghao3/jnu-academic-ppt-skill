@@ -73,7 +73,7 @@
 
 ---
 
-# 16 种版式
+# 18 种版式
 
 ## cover —— 封面
 
@@ -184,8 +184,26 @@
  "rows": [["SimCLR", "71.4%", "0.68", "4.0h"],
           ["本周复现", "78.2%", "0.76", "4.1h"]]}
 ```
-**不超过 6 行 4 列**。更大的表格应该截图原表，或者只挑关键行。
+**不超过 6 行 5 列**。更大的表格应该放备份页，或者只挑关键行。
 表头自动用主题主色，隔行浅底。
+
+## three-line-table —— 正式实验三线表
+
+字段与 `table` 相同。本地引擎优先使用 LaTeX `booktabs` 生成透明高清表格；工具链不可用时自动回退为 PowerPoint 原生表格。
+
+```jsonc
+{"layout": "three-line-table", "title": "本文方法在三项指标上均高于基线",
+ "lead": "均值 ± 标准差，3 个随机种子。",
+ "header": ["方法", "Accuracy (%)", "Macro-F1", "耗时 (h)"],
+ "rows": [["Baseline", "78.2 ± 0.3", "0.761 ± 0.004", "4.1"],
+          ["Ours", "81.6 ± 0.2", "0.803 ± 0.003", "4.6"]],
+ "align": ["left", "center", "center", "center"],
+ "bold_cells": [[2, 2], [2, 3]],
+ "caption": "最佳结果加粗",
+ "source": "本实验，3 个随机种子"}
+```
+
+可选字段：`bold_rows`、`bold_cells`、`latex_font_size`、`latex_dpi`。默认不要写 `latex_required`；安全回退是正常行为。LaTeX 成功时表格在 PPT 中是图片，原始结构化数据留在 deck.json。详细取舍见 [实验结果表与 LaTeX 三线表](tables.md)。
 
 ## chart —— 原生可编辑图表
 

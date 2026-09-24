@@ -16,6 +16,7 @@
 - 将 `themes/<id>/stencil.pptx` 作为模板导入，读取同目录的 `theme.json` 获取画布、字体、颜色、正文区和导航规格。
 - 复用模板外壳和母版，按 `deck.json` 或已确认大纲填入内容。生成后走宿主要求的渲染、结构检查与逐页视觉复核。
 - 需要图片时优先调用 Codex 的 image generation 工具。图片生成后仍须写图注和出处记录。
+- 结果表默认使用宿主的原生可编辑表格，并采用三线表视觉。只有用户明确接受图片表格时才把 LaTeX 渲染结果作为图片插入。
 
 Codex 会读取 `agents/openai.yaml` 作为界面元数据，但该文件不是其他宿主运行本 skill 的前提。
 
@@ -32,6 +33,8 @@ python <SKILL_DIR>/scripts/check_deck.py report.pptx --theme jnu-teal
 
 若命令名不是 `python`，使用当前环境实际可用的 `python3`、虚拟环境解释器或用户明确给出的解释器。不要把个人机器路径写进 skill。
 
+`three-line-table` 会尝试本机 LaTeX 工具链；不可用时自动回退为原生表格。详细规则见 [实验结果表与 LaTeX 三线表](tables.md)。
+
 ## 图片生成路由
 
 1. 宿主原生生图/修图工具可用：直接使用。它通常不需要用户额外配置 API key。
@@ -46,4 +49,3 @@ python <SKILL_DIR>/scripts/check_deck.py report.pptx --theme jnu-teal
 - WPS、PDF 和手机预览可能看不到备注，因此模拟问答必须同时出现在对话中。
 - 模板字体可能在其他系统回退。去陌生电脑汇报时应另存 PDF 备用，并在 PowerPoint 中检查字体替换。
 - 换主题不保证像素级无改动；必须重新检查换行、裁图和导航容量。
-

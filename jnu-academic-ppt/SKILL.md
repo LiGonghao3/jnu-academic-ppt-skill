@@ -57,6 +57,8 @@ description: 为暨南大学的组会、论文精读、开题、中期、毕业�
 
 使用本地引擎时，按 [deck.json 规范](references/deck-schema.md) 写内容，并遵守 [排版与信息密度](references/slide-rules.md)。图表、公式、截图和生成图都要保留来源。
 
+需要展示多方法、多指标的实验结果时读 [实验结果表与 LaTeX 三线表](references/tables.md)。正式场合可用 `three-line-table`；当前宿主要求可编辑证据时使用原生三线表，本地 LaTeX 不可用时允许自动回退，不能因为缺少 TeX 中断整份汇报。
+
 需要概念图、流程图或封面装饰时读 [配图规范](references/figures.md)。优先使用宿主原生生图工具；AI 图不得伪装成实验结果，图注必须标明“示意图（AI 生成）”。
 
 ### 5. 生成、校验和预览
@@ -95,6 +97,7 @@ python <SKILL_DIR>/scripts/check_deck.py report.pptx --theme jnu-teal
 - [叙事与页数](references/narrative.md)：设计大纲时
 - [deck.json 规范](references/deck-schema.md)：使用本地引擎时
 - [排版与信息密度](references/slide-rules.md)：写页面内容时
+- [实验结果表与 LaTeX 三线表](references/tables.md)：展示多方法、多指标实验结果时
 - [主题规范](references/themes.md)：选主题、维护预览或接入新模板时
 - [配图规范](references/figures.md)：取图、生图或编辑图片时
 - [预测提问规范](references/qa.md)：交付前

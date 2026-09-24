@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import zipfile
 from pathlib import Path
@@ -108,6 +109,41 @@ def _regressions(out_dir):
         fails.append("图表/表格样式回退：彩虹色、lead 未渲染或单元格未垂直居中")
     else:
         print("OK  图表跟随主题配色并渲染 lead，表格单元格垂直居中")
+
+    # 5a. 三线表：工具链可用时生成图片；禁用时必须回退原生可编辑表格
+    three_line = [
+        {"layout": "cover"},
+        {"layout": "three-line-table", "title": "三线表",
+         "header": ["方法", "准确率 (%)"],
+         "rows": [["A&B_1", "78.2%"], ["Ours", "81.6%"]],
+         "bold_cells": [[2, 2]]},
+        {"layout": "closing"},
+    ]
+    old_disable = os.environ.get("JNU_PPT_DISABLE_LATEX")
+    try:
+        os.environ.pop("JNU_PPT_DISABLE_LATEX", None)
+        latex_prs, latex_warns = _probe(out_dir, "latex-table", slides=three_line)
+        if any("已回退" in w for w in latex_warns):
+            print("OK  LaTeX 工具链不完整时自动回退")
+        elif not any(sh.name == "latex_three_line_table"
+                     for sh in latex_prs.slides[1].shapes):
+            fails.append("LaTeX 三线表未生成图片对象")
+        else:
+            print("OK  LaTeX booktabs 三线表生成成功")
+
+        os.environ["JNU_PPT_DISABLE_LATEX"] = "1"
+        native_prs, native_warns = _probe(out_dir, "latex-fallback", slides=three_line)
+        if not any(sh.has_table for sh in native_prs.slides[1].shapes):
+            fails.append("LaTeX 禁用后没有回退原生表格")
+        elif not any("已回退" in w for w in native_warns):
+            fails.append("LaTeX 回退没有给出提示")
+        else:
+            print("OK  LaTeX 禁用后回退 PowerPoint 原生表格")
+    finally:
+        if old_disable is None:
+            os.environ.pop("JNU_PPT_DISABLE_LATEX", None)
+        else:
+            os.environ["JNU_PPT_DISABLE_LATEX"] = old_disable
 
     # 5b. 横向条形图：按书写顺序从上到下、负值不反色、正负语义色
     prs, _ = _probe(out_dir, "bar", slides=[

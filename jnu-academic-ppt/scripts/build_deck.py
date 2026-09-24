@@ -16,7 +16,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -34,6 +36,7 @@ from ppt_kit import (  # noqa: E402
     block_height, line, line_height_in, picture, rect, rgb, sanitize_filename,
     set_text, text_width_units, textbox,
 )
+from render_latex_table import LatexTableUnavailable, render_table  # noqa: E402
 from pptx import Presentation  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -703,6 +706,16 @@ class Builder:
 
     def s_table(self, slide, s):
         l, t, w, h = self.g("body")
+        lead = s.get("lead")
+        if lead:
+            lead_h = self.p(0.82)
+            set_text(textbox(slide, l, t, w, lead_h).text_frame, lead, self.t,
+                     role="body", size=self.ts("lead", 18), color="primary",
+                     bold=True, anchor="middle", line_spacing=1.25)
+            t, h = t + lead_h + self.p(0.12), h - lead_h - self.p(0.12)
+        caption = s.get("caption")
+        cap_h = self.p(0.42) if caption else 0
+        h -= cap_h
         head = s.get("header") or []
         rows_in = s.get("rows") or []
         ncol = max(len(head), max((len(r) for r in rows_in), default=1))
@@ -717,6 +730,9 @@ class Builder:
         tbl.first_row = bool(head)
         body_pt = self.ts("small", 14)
         data = ([head] if head else []) + rows_in
+        bold_rows = {int(v) for v in (s.get("bold_rows") or [])}
+        bold_cells = {tuple(int(n) for n in pair) for pair in (s.get("bold_cells") or [])
+                      if isinstance(pair, (list, tuple)) and len(pair) == 2}
         for r, row in enumerate(data):
             tbl.rows[r].height = inches(rh)
             is_head = bool(head) and r == 0
@@ -729,12 +745,74 @@ class Builder:
                     self.t.c("primary") if is_head
                     else (self.t.c("surface_alt") if r % 2 else self.t.c("white")))
                 txt = str(row[c]) if c < len(row) else ""
+                data_row = r if head else r + 1
+                cell_bold = is_head or data_row in bold_rows or (data_row, c + 1) in bold_cells
+                align_cfg = s.get("align", "left")
+                if isinstance(align_cfg, list):
+                    cell_align = align_cfg[c] if c < len(align_cfg) else "center"
+                else:
+                    cell_align = "left" if c == 0 else align_cfg
                 set_text(cell.text_frame, txt, self.t, role="body", size=body_pt,
-                         color="white" if is_head else "ink", bold=is_head,
+                         color="white" if is_head else "ink", bold=cell_bold,
                          anchor="middle", space_after=0, line_spacing=1.15,
-                         align="left" if c == 0 else s.get("align", "left"))
+                         align=cell_align)
                 # 表格单元格不认 text_frame 的 anchor，垂直居中要设在单元格上
                 cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+        if caption:
+            set_text(textbox(slide, l, t + h + self.p(0.06), w,
+                             self.p(0.34)).text_frame, caption, self.t, role="body",
+                     size=self.ts("caption", 11), color="muted", align="center",
+                     space_after=0)
+
+    def s_three_line_table(self, slide, s):
+        """LaTeX booktabs 三线表；工具链不可用时回退为原生可编辑表格。"""
+        header = s.get("header") or []
+        rows = s.get("rows") or []
+        try:
+            with tempfile.TemporaryDirectory(prefix="jnu-ppt-table-") as tmp:
+                png = Path(tmp) / "table.png"
+                render_table(
+                    header, rows, png,
+                    align=s.get("align"),
+                    font_size=s.get("latex_font_size"),
+                    bold_rows=s.get("bold_rows"),
+                    bold_cells=s.get("bold_cells"),
+                    dpi=int(s.get("latex_dpi", 600)),
+                    text_color=self.t.c(s.get("text_color", "ink")),
+                    rule_color=self.t.c(s.get("rule_color", "ink")),
+                    engine=s.get("latex_engine"),
+                    converter=s.get("pdf_converter"),
+                    timeout=int(s.get("latex_timeout", 90)),
+                )
+                l, t, w, h = self.g("body")
+                lead = s.get("lead")
+                if lead:
+                    lead_h = self.p(0.82)
+                    set_text(textbox(slide, l, t, w, lead_h).text_frame, lead, self.t,
+                             role="body", size=self.ts("lead", 18), color="primary",
+                             bold=True, anchor="middle", line_spacing=1.25)
+                    t, h = t + lead_h + self.p(0.12), h - lead_h - self.p(0.12)
+                caption = s.get("caption")
+                cap_h = self.p(0.42) if caption else 0
+                pic = picture(slide, png, l, t, w, h - cap_h, mode="fit")
+                pic.name = "latex_three_line_table"
+                pic._element.nvPicPr.cNvPr.set(
+                    "descr", "LaTeX booktabs 三线表；结构化数据保存在 deck.json")
+                if caption:
+                    set_text(textbox(slide, l, t + h - cap_h + self.p(0.06), w,
+                                     self.p(0.34)).text_frame, caption, self.t, role="body",
+                             size=self.ts("caption", 11), color="muted", align="center",
+                             space_after=0)
+                return
+        except (LatexTableUnavailable, subprocess.TimeoutExpired) as exc:
+            if s.get("latex_required"):
+                raise SystemExit(f"三线表要求使用 LaTeX，但渲染失败：{exc}")
+            reason = " ".join(str(exc).split())
+            if len(reason) > 240:
+                reason = reason[:237] + "…"
+            self.warnings.append(
+                "LaTeX 三线表不可用，已回退为 PowerPoint 原生可编辑表格：" + reason)
+            self.s_table(slide, s)
 
     def s_chart(self, slide, s):
         """可编辑的原生图表；只接受用户提供或可追溯的数据。"""
@@ -968,7 +1046,8 @@ class Builder:
         "bullets": "s_bullets", "two-col": "s_two_col", "cards": "s_cards",
         "image-text": "s_image_text", "image-full": "s_image_full",
         "compare": "s_compare", "timeline": "s_timeline", "steps": "s_steps",
-        "kpi": "s_kpi", "table": "s_table", "chart": "s_chart",
+        "kpi": "s_kpi", "table": "s_table",
+        "three-line-table": "s_three_line_table", "chart": "s_chart",
         "quote": "s_quote", "blank": None,
     }
 

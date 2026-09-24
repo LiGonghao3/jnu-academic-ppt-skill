@@ -31,7 +31,7 @@
 | 实验结果图、截图 (png/jpg) | 当证据放进 `image-text` / `image-full` | 直接引用路径 |
 | PDF（论文、报告） | 抽正文和原图 | 使用宿主提供的 PDF 工具；没有时再用本地 PDF 库 |
 | md / txt 笔记 | 当流水账读 | 直接读 |
-| xlsx / csv | 抽成 `table` 或 `kpi` | 读取后自己整理 |
+| xlsx / csv | 抽成 `table`、`three-line-table` 或 `kpi` | 读取后自己整理 |
 | 代码 / commit log | 转成「做了什么」的进展条目 | 读取后概括 |
 
 **扫描完要把清单念给用户听**，并问：哪些是这次要讲的重点、哪些只是顺手存的。

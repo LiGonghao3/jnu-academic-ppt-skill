@@ -8,7 +8,7 @@
   <img src="examples/attention-is-all-you-need/preview/teal-s07.jpg" width="49%" alt="示例：Transformer 结构页">
   <img src="examples/attention-is-all-you-need/preview/teal-s14.jpg" width="49%" alt="示例：消融实验图表页">
 </p>
-<p align="center"><sub>以上两页出自下方的 <a href="#效果展示一份真实的论文精读">Transformer 论文精读示例</a>，由本技能生成，所有文字、表格和图表都可以直接编辑</sub></p>
+<p align="center"><sub>以上两页出自下方的 <a href="#效果展示一份真实的论文精读">Transformer 论文精读示例</a>，由本技能生成；正文、原生表格和图表可以直接编辑，选择 LaTeX 三线表时表格会作为高清图片插入</sub></p>
 
 ---
 
@@ -73,7 +73,7 @@
 
 - **先理清主线，再做页面。** AI 会先把你的材料整理成"进展 → 证据 → 卡点 → 下一步"（组会）或"背景 → 方法 → 结果 → 不足"（答辩），在对话里给出每页标题，确认后再生成。
 - **不编数字。** 结论、指标、引用都必须能追溯到你给的材料；信息不够时 AI 会追问或做短版，不会注水。
-- **五套暨大主题。** 背景、校徽、导航都来自学校发布的 PPT 模板；正文用原生形状绘制，文字、表格、图表都可以在 PowerPoint 里直接改。
+- **五套暨大主题。** 背景、校徽、导航都来自学校发布的 PPT 模板；正文、普通表格和图表使用原生对象，可以在 PowerPoint 里直接改。正式实验结果还可以选用 LaTeX `booktabs` 三线表。
 - **交付前自检。** 自动检查缺图、模板占位字残留、文字溢出和越界、字号过小、对比度不足、图片模糊或变形、单页字数过多。缺图会直接中止导出，不会把占位框当成品交给你。
 - **模拟导师问答。** 组会 5–8 题、答辩 8–12 题，逐题写"可能怎么问 / 建议怎么答 / 你还缺什么"。完整版在对话里给出，精简版会写进结尾页备注。
 
@@ -113,6 +113,8 @@ python -m pip install -r jnu-academic-ppt/requirements.txt
 
 Codex 会优先使用它自带的演示文稿和生图能力，通常不需要你额外配置 Python 或 API Key。
 
+LaTeX 不是必装依赖。需要论文风格的实验三线表时，可额外安装 XeLaTeX（推荐，也支持 LuaLaTeX / pdfLaTeX）、`booktabs`、`ctex` 和 `pdftocairo`；未检测到完整工具链时，技能会自动改用 PowerPoint 原生表格，不影响生成整份 PPT。
+
 ## 怎么用
 
 装好后直接对 AI 说话即可，例如：
@@ -122,6 +124,8 @@ Codex 会优先使用它自带的演示文稿和生图能力，通常不需要�
 > 把这篇论文做成精读汇报，重点讲方法和它对我们组的启发。
 
 > 我要做毕业答辩，这是论文和实验图的文件夹，帮我先出大纲。
+
+> 把这组实验结果排成正式的 LaTeX 三线表；如果这台电脑没有 LaTeX，就用可编辑的原生表格。
 
 只有你明确提到"暨大风格"或本技能的主题时，它才会启用；普通商务 PPT 不会误触发。
 
@@ -164,6 +168,7 @@ python jnu-academic-ppt/scripts/check_deck.py 组会.pptx --theme jnu-teal
 | `check_deck.py` | 11 项静态自检；Windows 装有 PowerPoint 时加 `--deep` 可实测文字外框 |
 | `render_preview.ps1` | 用本机 PowerPoint 把每页导出成 PNG，加 `-Contact` 会拼一张总览图（仅 Windows） |
 | `gen_figure.py` | 在没有原生生图能力时，调用 OpenAI 图像接口生成**概念示意图** |
+| `render_latex_table.py` | 检查并调用本机 LaTeX 工具链，把实验结果排成透明背景的高清 `booktabs` 三线表 |
 | `smoke_test.py` | 全部主题 × 示例的冒烟测试和回归测试 |
 
 `render_preview.ps1` 和 `--deep` 只会关闭它们自己启动的 PowerPoint，不会影响你已经打开的文件。
@@ -173,6 +178,31 @@ python jnu-academic-ppt/scripts/check_deck.py 组会.pptx --theme jnu-teal
 - `meta.duration_minutes`：写 10 分钟以内时自动进入**紧凑模式**，省掉目录页和章节过渡页；也可以用 `meta.presentation_mode` 写 `"compact"` 或 `"standard"` 来强制指定。
 - 顶层 `qa`：结构化的模拟问答，会以精简版（600 字以内，按整题取舍）写进结尾页备注。
 - `layout: "chart"`：原生可编辑的柱状图、条形图和折线图，数据会嵌进 PPT 里的 Excel 工作簿；可以在柱子上标数值，变化量图可以用红绿两色区分下降和提升。
+
+### 实验结果三线表
+
+需要汇报模型对比、消融实验或参数敏感性结果时，使用 `layout: "three-line-table"`。技能会优先用 LaTeX `booktabs` 生成论文风格的三线表，并以高分辨率透明 PNG 放进 PPT；原始数据仍保留在 `deck.json` 中。LaTeX 工具链不可用或编译失败时，会给出提示并自动回退到可编辑的 PowerPoint 原生表格。
+
+```bash
+# 检查这台电脑能否生成 LaTeX 三线表
+python jnu-academic-ppt/scripts/render_latex_table.py --check
+```
+
+```json
+{
+  "layout": "three-line-table",
+  "title": "本文方法在三项指标上均高于基线",
+  "header": ["方法", "Accuracy (%)", "Macro-F1", "耗时 (h)"],
+  "rows": [
+    ["Baseline", "78.2 ± 0.3", "0.761 ± 0.004", "4.1"],
+    ["Ours", "81.6 ± 0.2", "0.803 ± 0.003", "4.6"]
+  ],
+  "bold_cells": [[2, 2], [2, 3]],
+  "source": "三次独立实验的均值 ± 标准差"
+}
+```
+
+LaTeX 版更正式，但在 PowerPoint 中是图片，不能逐格编辑；如果现场还要频繁改数字，直接使用 `layout: "table"` 更合适。完整字段、字体与回退规则见 [实验结果表与 LaTeX 三线表](jnu-academic-ppt/references/tables.md)，可运行的例子见 [三线表示例.deck.json](jnu-academic-ppt/examples/%E4%B8%89%E7%BA%BF%E8%A1%A8%E7%A4%BA%E4%BE%8B.deck.json)。
 
 ### AI 生图
 
@@ -188,7 +218,7 @@ API Key 只从环境变量 `OPENAI_API_KEY` 或技能目录下的 `.openai.json`
 ## 设计原则
 
 - **信息量适中**：普通内容页建议 80–180 字，至少说清"结论/主题、证据、解释"中的两项。结果页必须交代指标、基线、评测口径和来源。细节放备注或备份页。
-- **可编辑优先**：正文、表格、图表都是原生对象；只有照片、论文原图和模板背景是图片。
+- **可编辑优先**：正文、普通表格和图表使用原生对象；照片、论文原图、模板背景，以及用户选择的 LaTeX 三线表是图片。三线表的原始数据始终保留在 `deck.json` 中。
 - **诚实自检**：报告会区分"静态估算"和"PowerPoint 实测"，没实测过的不会写成已经实测。
 - **备注不是唯一交付**：WPS、手机和导出的 PDF 可能看不到备注，所以模拟问答一定会在对话里完整给出。
 
@@ -222,6 +252,7 @@ jnu-academic-ppt-skill/
 ## 已知限制
 
 - `--deep` 实测和 `render_preview.ps1` 需要 Windows 和桌面版 PowerPoint；其他环境只做静态估算，报告里会明确说明。
+- LaTeX 三线表依赖本机 LaTeX 与 PDF 转图工具，生成后在 PPT 中不可逐格编辑；缺少工具链时会自动回退为原生表格。
 - 模板字体在别的电脑上可能被替换。去陌生电脑演示时，建议另存一份 PDF 备用。
 - 换主题不能保证像素级一致，换完需要重新检查换行和图片裁切。
 

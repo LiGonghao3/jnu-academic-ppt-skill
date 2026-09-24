@@ -163,7 +163,7 @@ python scripts/check_deck.py .jnuppt/t.pptx --theme my-theme --deep
 powershell -File scripts/render_preview.ps1 -Path .jnuppt/t.pptx -Out .jnuppt/prev
 ```
 
-示例 deck 覆盖了全部 15 种版式，体检 0 ERROR + 预览图肉眼过一遍，就算收编成功。
+示例 deck 覆盖全部 18 种版式，体检 0 ERROR + 预览图肉眼过一遍，就算收编成功。
 
 ### 常见坑
 

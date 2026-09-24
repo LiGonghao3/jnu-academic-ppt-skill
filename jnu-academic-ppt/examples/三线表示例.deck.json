@@ -1,0 +1,29 @@
+{
+  "theme": "jnu-rigor",
+  "meta": {
+    "title": "实验结果三线表示例",
+    "subtitle": "LaTeX booktabs 优先，原生表格自动回退",
+    "presenter": "张同学",
+    "affiliation": "信息科学技术学院",
+    "date": "2026-09-24",
+    "presentation_mode": "standard"
+  },
+  "slides": [
+    {"layout": "cover"},
+    {
+      "layout": "three-line-table",
+      "title": "本文方法在三项指标上均高于基线",
+      "lead": "均值来自三个随机种子；数值仅用于演示版式。",
+      "header": ["方法", "Accuracy (%)", "Macro-F1", "耗时 (h)"],
+      "rows": [
+        ["Baseline", "78.2 ± 0.3", "0.761 ± 0.004", "4.1"],
+        ["Ours", "81.6 ± 0.2", "0.803 ± 0.003", "4.6"]
+      ],
+      "align": ["left", "center", "center", "center"],
+      "bold_cells": [[2, 2], [2, 3]],
+      "caption": "三线表仅保留顶线、表头分隔线和底线",
+      "source": "演示数据，仅用于版式与回退测试"
+    },
+    {"layout": "closing", "title": "谢谢", "subtitle": "欢迎提问"}
+  ]
+}
